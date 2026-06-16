@@ -9,9 +9,9 @@
 
 USE laptop_evaluator;
 
--- 1. Add image_path column (IF NOT EXISTS requires MySQL 8.0)
+-- 1. Add image_path column
 ALTER TABLE laptops
-    ADD COLUMN IF NOT EXISTS image_path VARCHAR(255) NULL AFTER price;
+    ADD COLUMN image_path VARCHAR(255) NULL AFTER price;
 
 -- 2. Replace fn_calculate_score with dynamic price version
 DROP FUNCTION IF EXISTS fn_calculate_score;
