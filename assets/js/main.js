@@ -74,47 +74,54 @@ function initLiveScore() {
 }
 
 function calculateScore(cpu_tier, ram_gb, storage_gb, condition, has_warranty, release_year, price) {
-    let score = 0;
+    let specScore = 0;
 
     // CPU Tier (max 30)
-    score += parseInt(cpu_tier) * 10;
+    specScore += parseInt(cpu_tier) * 10;
 
     // RAM (max 25)
     const ram = parseInt(ram_gb);
-    if      (ram >= 32) score += 25;
-    else if (ram >= 16) score += 20;
-    else if (ram >= 8)  score += 10;
-    else                score += 5;
+    if      (ram >= 32) specScore += 25;
+    else if (ram >= 16) specScore += 20;
+    else if (ram >= 8)  specScore += 10;
+    else                specScore += 5;
 
     // Storage (max 15)
     const storage = parseInt(storage_gb);
-    if      (storage >= 1000) score += 15;
-    else if (storage >= 512)  score += 12;
-    else if (storage >= 256)  score += 7;
-    else                      score += 3;
+    if      (storage >= 1000) specScore += 15;
+    else if (storage >= 512)  specScore += 12;
+    else if (storage >= 256)  specScore += 7;
+    else                      specScore += 3;
 
     // Kondisi (max 15)
-    score += (parseInt(condition) - 1) * 5;
+    specScore += (parseInt(condition) - 1) * 5;
 
     // Garansi (max 5)
-    if (has_warranty) score += 5;
+    if (has_warranty) specScore += 5;
 
     // Age penalty
     const year = parseInt(release_year);
-    if      (year < 2018) score -= 5;
-    else if (year < 2020) score -= 2;
+    if      (year < 2018) specScore -= 5;
+    else if (year < 2020) specScore -= 2;
 
-    // Harga (fixed 10)
-    if (parseInt(price) > 0) score += 10;
+    // Price score: ratio = price / specScore (mirrors MySQL fn_calculate_score)
+    const p = parseInt(price);
+    let priceScore = 0;
+    if (p > 0 && specScore > 0) {
+        const ratio = p / specScore;
+        if      (ratio <= 50)  priceScore = 15;
+        else if (ratio <= 85)  priceScore = 10;
+        else if (ratio <= 120) priceScore = 5;
+    }
 
-    return Math.max(0, score);
+    return Math.max(0, specScore + priceScore);
 }
 
 function getVerdict(score) {
-    if (score >= 70) return { label: 'Great Deal', cls: 'success' };
-    if (score >= 50) return { label: 'Fair',       cls: 'info'    };
-    if (score >= 30) return { label: 'Overpriced', cls: 'warning' };
-    return               { label: 'Avoid',      cls: 'danger'  };
+    if (score >= 75) return { label: 'Great Deal', cls: 'success' };
+    if (score >= 55) return { label: 'Fair',       cls: 'info'    };
+    if (score >= 35) return { label: 'Overpriced', cls: 'warning' };
+    return               { label: 'Avoid',       cls: 'danger'  };
 }
 
 function updateScorePreview() {
