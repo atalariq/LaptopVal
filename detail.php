@@ -18,17 +18,27 @@ if ($laptop === null) {
     exit;
 }
 
-// Score breakdown (display only — not recalculating the final score)
-$cpu_pts     = (int)$laptop['cpu_tier'] * 10;
-$ram         = (int)$laptop['ram_gb'];
-$ram_pts     = $ram >= 32 ? 25 : ($ram >= 16 ? 20 : ($ram >= 8 ? 10 : 5));
-$storage     = (int)$laptop['storage_gb'];
-$storage_pts = $storage >= 1000 ? 15 : ($storage >= 512 ? 12 : ($storage >= 256 ? 7 : 3));
-$cond_pts    = ((int)$laptop['condition'] - 1) * 5;
+// Score breakdown (display only — mirrors fn_calculate_score, not recalculating final score)
+$cpu_pts      = (int)$laptop['cpu_tier'] * 10;
+$ram          = (int)$laptop['ram_gb'];
+$ram_pts      = $ram >= 32 ? 25 : ($ram >= 16 ? 20 : ($ram >= 8 ? 10 : 5));
+$storage      = (int)$laptop['storage_gb'];
+$storage_pts  = $storage >= 1000 ? 15 : ($storage >= 512 ? 12 : ($storage >= 256 ? 7 : 3));
+$cond_pts     = ((int)$laptop['condition'] - 1) * 5;
 $warranty_pts = $laptop['has_warranty'] ? 5 : 0;
-$year        = (int)$laptop['release_year'];
-$age_pts     = $year < 2018 ? -5 : ($year < 2020 ? -2 : 0);
-$price_pts   = 10;
+$year         = (int)$laptop['release_year'];
+$age_pts      = $year < 2018 ? -5 : ($year < 2020 ? -2 : 0);
+
+// Dynamic price score (mirrors MySQL ratio logic)
+$spec_score_only = $cpu_pts + $ram_pts + $storage_pts + $cond_pts + $warranty_pts + $age_pts;
+$price           = (int)$laptop['price'];
+$price_pts       = 0;
+if ($spec_score_only > 0 && $price > 0) {
+    $ratio = $price / $spec_score_only;
+    if      ($ratio <= 50)  $price_pts = 15;
+    elseif  ($ratio <= 85)  $price_pts = 10;
+    elseif  ($ratio <= 120) $price_pts = 5;
+}
 
 $title = h($laptop['brand']) . ' ' . h($laptop['model']);
 require_once 'includes/header_public.php';
@@ -41,6 +51,15 @@ require_once 'includes/header_public.php';
         <li class="breadcrumb-item active"><?= h($laptop['brand']) ?> <?= h($laptop['model']) ?></li>
     </ol>
 </nav>
+
+<?php if (!empty($laptop['image_path'])): ?>
+<div class="mb-4">
+    <img src="<?= BASE_URL . h($laptop['image_path']) ?>"
+         alt="<?= h($laptop['brand'] . ' ' . $laptop['model']) ?>"
+         class="img-fluid rounded shadow-sm"
+         style="max-height:350px; width:100%; object-fit:cover;">
+</div>
+<?php endif; ?>
 
 <div class="row g-4">
     <!-- Left: Specs table -->
@@ -86,7 +105,7 @@ require_once 'includes/header_public.php';
                     ['Kondisi',   $cond_pts,     15],
                     ['Garansi',   $warranty_pts,  5],
                     ['Age',       $age_pts,       5],
-                    ['Harga',     $price_pts,    10],
+                    ['Harga',     $price_pts,    15],
                 ];
                 foreach ($bars as [$label, $pts, $max]):
                     $pct   = $max > 0 ? max(0, min(100, (int)round($pts / $max * 100))) : 0;
