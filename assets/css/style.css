@@ -1,0 +1,36 @@
+/* ── Hero gradient ───────────────────────────────────────────────── */
+.hero-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+    color: #fff;
+    padding: 3.5rem 1rem;
+    border-radius: .5rem;
+    margin-bottom: 2rem;
+}
+
+/* ── Verdict badge color overrides ──────────────────────────────── */
+.badge-verdict-great  { background-color: #198754; color: #fff; }
+.badge-verdict-fair   { background-color: #0dcaf0; color: #000; }
+.badge-verdict-over   { background-color: #ffc107; color: #000; }
+.badge-verdict-avoid  { background-color: #dc3545; color: #fff; }
+
+/* ── Card hover shadow ───────────────────────────────────────────── */
+.card-laptop {
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+.card-laptop:hover {
+    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .15);
+    transform: translateY(-2px);
+}
+
+/* ── Score number (detail page) ─────────────────────────────────── */
+.score-display {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ── Sticky score preview panel ─────────────────────────────────── */
+.score-preview-panel {
+    position: sticky;
+    top: 1rem;
+}
