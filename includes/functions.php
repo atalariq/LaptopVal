@@ -78,7 +78,7 @@ function get_laptops(mysqli $conn, int $use_case_id = 0): array
         // Q2: JOIN + filter by use case requirements
         $sql = "SELECT l.id, l.model, b.name AS brand, l.price, l.ram_gb,
                        l.storage_gb, l.`condition`, l.has_warranty,
-                       l.cpu_tier, l.release_year, l.listed_at,
+                       l.cpu_tier, l.release_year, l.listed_at, l.image_path,
                        e.value_score, e.verdict
                 FROM laptops l
                 JOIN brands b ON l.brand_id = b.id
@@ -94,7 +94,7 @@ function get_laptops(mysqli $conn, int $use_case_id = 0): array
         // Q1: simple JOIN all laptops
         $sql = "SELECT l.id, l.model, b.name AS brand, l.price, l.ram_gb,
                        l.storage_gb, l.`condition`, l.has_warranty,
-                       l.cpu_tier, l.release_year, l.listed_at,
+                       l.cpu_tier, l.release_year, l.listed_at, l.image_path,
                        e.value_score, e.verdict
                 FROM laptops l
                 JOIN brands b ON l.brand_id = b.id
@@ -111,7 +111,7 @@ function get_laptop(mysqli $conn, int $id): array|null
 {
     $sql = "SELECT l.id, l.model, b.name AS brand, l.brand_id, l.price,
                    l.ram_gb, l.storage_gb, l.`condition`, l.has_warranty,
-                   l.cpu_tier, l.release_year, l.listed_at,
+                   l.cpu_tier, l.release_year, l.listed_at, l.image_path,
                    e.value_score, e.verdict, e.evaluated_at
             FROM laptops l
             JOIN brands b ON l.brand_id = b.id
