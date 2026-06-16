@@ -80,17 +80,17 @@ INSERT INTO scoring_rules (factor, value_key, points, description) VALUES
 -- Evaluasi diisi OTOMATIS oleh trg_after_laptop_insert.
 -- ============================================================
 INSERT INTO laptops
-    (brand_id, model, release_year, cpu_tier, ram_gb, storage_gb, `condition`, has_warranty, price)
+    (brand_id, model, release_year, cpu_tier, ram_gb, storage_gb, `condition`, has_warranty, price, created_by)
 VALUES
---  brand  model                        tahun  cpu  ram  storage  kondisi  garansi  harga(ribu)
-    (1,    'ThinkPad X260',             2017,   2,   8,    256,     3,    FALSE,   2800),
-    (1,    'ThinkPad T480',             2019,   2,  16,    512,     4,    FALSE,   5200),
-    (2,    'VivoBook S14 S433',         2021,   2,   8,    512,     3,    TRUE,    5500),
-    (3,    'Aspire 5 A515-56',          2021,   1,   4,    256,     2,    FALSE,   2500),
-    (4,    'EliteBook 840 G5',          2018,   2,  16,    256,     3,    FALSE,   4000),
-    (5,    'Latitude 5490',             2018,   2,   8,    256,     2,    FALSE,   3200),
-    (6,    'MacBook Air M1',            2020,   3,   8,    256,     4,    TRUE,    8500),
-    (2,    'ROG Strix G15',             2022,   3,  16,   1000,     3,    TRUE,    9000),
-    (7,    'Dynabook R73/B',            2016,   1,   4,    128,     1,    FALSE,   1200),
-    (4,    'Pavilion 14-dv0514TX',      2021,   2,   8,    512,     3,    FALSE,   4500);
+--  brand  model                        tahun  cpu  ram  storage  kondisi  garansi  harga(ribu)  creator
+    (1,    'ThinkPad X260',             2017,   2,   8,    256,     3,    FALSE,   2800,  1),
+    (1,    'ThinkPad T480',             2019,   2,  16,    512,     4,    FALSE,   5200,  1),
+    (2,    'VivoBook S14 S433',         2021,   2,   8,    512,     3,    TRUE,    5500,  1),
+    (3,    'Aspire 5 A515-56',          2021,   1,   4,    256,     2,    FALSE,   2500,  1),
+    (4,    'EliteBook 840 G5',          2018,   2,  16,    256,     3,    FALSE,   4000,  1),
+    (5,    'Latitude 5490',             2018,   2,   8,    256,     2,    FALSE,   3200,  1),
+    (6,    'MacBook Air M1',            2020,   3,   8,    256,     4,    TRUE,    8500,  1),
+    (2,    'ROG Strix G15',             2022,   3,  16,   1000,     3,    TRUE,    9000,  1),
+    (7,    'Dynabook R73/B',            2016,   1,   4,    128,     1,    FALSE,   1200,  1),
+    (4,    'Pavilion 14-dv0514TX',      2021,   2,   8,    512,     3,    FALSE,   4500,  1);
 -- Catatan: 10 laptop di atas otomatis memunculkan 10 baris di tabel evaluations.

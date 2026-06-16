@@ -6,6 +6,8 @@ require_once '../includes/functions.php';
 
 require_login();
 
+$current_user_id = (int)($_SESSION['user_id'] ?? 0);
+
 $id      = isset($_GET['id']) ? (int)$_GET['id'] : null;
 $is_edit = $id !== null && $id > 0;
 $laptop  = null;
@@ -104,13 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "UPDATE laptops
                  SET model=?, brand_id=?, release_year=?, cpu_tier=?,
                      ram_gb=?, storage_gb=?, `condition`=?, has_warranty=?,
-                     price=?, image_path=?
+                     price=?, image_path=?, updated_by=?
                  WHERE id=?"
             );
-            $stmt->bind_param('siiiiiiiisi',
+            $stmt->bind_param('siiiiiiiisii',
                 $model, $brand_id, $release_year, $cpu_tier,
                 $ram_gb, $storage_gb, $condition, $has_warranty,
-                $price, $image_path, $id
+                $price, $image_path, $current_user_id, $id
             );
             $stmt->execute();
             set_flash('Laptop berhasil diupdate.', 'success');
@@ -118,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare(
                 "INSERT INTO laptops
                  (model, brand_id, release_year, cpu_tier, ram_gb, storage_gb,
-                  `condition`, has_warranty, price, image_path)
-                 VALUES (?,?,?,?,?,?,?,?,?,?)"
+                  `condition`, has_warranty, price, image_path, created_by)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param('siiiiiiisi',
+            $stmt->bind_param('siiiiiiisii',
                 $model, $brand_id, $release_year, $cpu_tier,
                 $ram_gb, $storage_gb, $condition, $has_warranty,
-                $price, $image_path
+                $price, $image_path, $current_user_id
             );
             $stmt->execute();
             set_flash('Laptop berhasil ditambahkan.', 'success');

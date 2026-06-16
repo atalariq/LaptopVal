@@ -42,8 +42,12 @@ CREATE TABLE laptops (
     has_warranty BOOLEAN DEFAULT FALSE,
     price        INT NOT NULL      COMMENT 'ribuan IDR — e.g. 3500 = Rp 3.500.000',
     image_path   VARCHAR(255) NULL,
+    created_by   INT NULL,
+    updated_by   INT NULL,
     listed_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (brand_id) REFERENCES brands(id)
+    FOREIGN KEY (brand_id) REFERENCES brands(id),
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- T4. scoring_rules — referensi poin per faktor (ditampilkan di UI)
@@ -192,15 +196,17 @@ DELIMITER ;
 -- VIEWS
 -- ============================================================
 
--- V1. v_laptop_evaluations — JOIN utama: laptops + brands + evaluations
+-- V1. v_laptop_evaluations — JOIN utama: laptops + brands + evaluations + creator
 CREATE VIEW v_laptop_evaluations AS
 SELECT l.id, l.model, b.name AS brand, l.price,
        l.cpu_tier, l.ram_gb, l.storage_gb, l.`condition`, l.has_warranty,
        l.release_year, l.listed_at, l.brand_id, l.image_path,
+       l.created_by, usr.username AS created_by_name,
        e.value_score, e.verdict, e.evaluated_at
 FROM laptops l
 JOIN brands b ON l.brand_id = b.id
-JOIN evaluations e ON e.laptop_id = l.id;
+JOIN evaluations e ON e.laptop_id = l.id
+LEFT JOIN users usr ON l.created_by = usr.id;
 
 -- V2. v_best_value_laptops — filter hanya laptop worth buying (Great Deal / Fair)
 CREATE VIEW v_best_value_laptops AS

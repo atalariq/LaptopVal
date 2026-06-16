@@ -79,10 +79,12 @@ function get_laptops(mysqli $conn, int $use_case_id = 0): array
         $sql = "SELECT l.id, l.model, b.name AS brand, l.price, l.ram_gb,
                        l.storage_gb, l.`condition`, l.has_warranty,
                        l.cpu_tier, l.release_year, l.listed_at, l.image_path,
+                       usr.username AS created_by_name,
                        e.value_score, e.verdict
                 FROM laptops l
                 JOIN brands b ON l.brand_id = b.id
                 JOIN evaluations e ON e.laptop_id = l.id
+                LEFT JOIN users usr ON l.created_by = usr.id
                 JOIN use_cases u ON u.id = ?
                 WHERE l.ram_gb >= u.min_ram_gb
                   AND l.cpu_tier >= u.min_cpu_tier
@@ -95,10 +97,12 @@ function get_laptops(mysqli $conn, int $use_case_id = 0): array
         $sql = "SELECT l.id, l.model, b.name AS brand, l.price, l.ram_gb,
                        l.storage_gb, l.`condition`, l.has_warranty,
                        l.cpu_tier, l.release_year, l.listed_at, l.image_path,
+                       usr.username AS created_by_name,
                        e.value_score, e.verdict
                 FROM laptops l
                 JOIN brands b ON l.brand_id = b.id
                 JOIN evaluations e ON e.laptop_id = l.id
+                LEFT JOIN users usr ON l.created_by = usr.id
                 ORDER BY e.value_score DESC";
         $stmt = $conn->prepare($sql);
     }
