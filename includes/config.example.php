@@ -14,8 +14,8 @@ define('DB_PASS', 'root');
 define('DB_NAME', 'laptop_evaluator');
 
 // App
-define('APP_NAME', 'Used Laptop Deal Evaluator');
-define('APP_TAGLINE', 'Kriteria beli laptop bekas yang eksplisit dan konsisten.');
+define('APP_NAME', 'LaptopVal');
+define('APP_TAGLINE', 'Skor objektif buat laptop bekas — biar nggak salah beli.');
 
 // Base URL
 define('BASE_URL', '/');

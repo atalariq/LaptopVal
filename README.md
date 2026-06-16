@@ -1,4 +1,4 @@
-# Used Laptop Deal Evaluator
+# LaptopVal
 
 Sistem evaluasi laptop bekas yang memberikan skor objektif berdasarkan spesifikasi dan harga, sehingga pembeli dapat membuat keputusan pembelian yang lebih eksplisit dan konsisten.
 
