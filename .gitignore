@@ -1,0 +1,19 @@
+# Sensitive config
+includes/config.php
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local only
+.archived
+*.local.*
+*.private.*
