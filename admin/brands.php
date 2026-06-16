@@ -17,10 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($name === '') {
             set_flash('Nama brand wajib diisi.', 'danger');
         } else {
-            $stmt = $conn->prepare("INSERT INTO brands (name, notes) VALUES (?, ?)");
-            $stmt->bind_param('ss', $name, $notes);
-            $stmt->execute();
-            set_flash('Brand berhasil ditambahkan.', 'success');
+            try {
+                $stmt = $conn->prepare("INSERT INTO brands (name, notes) VALUES (?, ?)");
+                $stmt->bind_param('ss', $name, $notes);
+                $stmt->execute();
+                set_flash('Brand berhasil ditambahkan.', 'success');
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() === 1062) {
+                    set_flash('Gagal: Nama brand sudah ada.', 'danger');
+                } else {
+                    set_flash('Gagal menambahkan brand.', 'danger');
+                }
+            }
         }
 
     } elseif ($action === 'edit') {
@@ -30,10 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($name === '' || $id <= 0) {
             set_flash('Data tidak valid.', 'danger');
         } else {
-            $stmt = $conn->prepare("UPDATE brands SET name = ?, notes = ? WHERE id = ?");
-            $stmt->bind_param('ssi', $name, $notes, $id);
-            $stmt->execute();
-            set_flash('Brand berhasil diupdate.', 'success');
+            try {
+                $stmt = $conn->prepare("UPDATE brands SET name = ?, notes = ? WHERE id = ?");
+                $stmt->bind_param('ssi', $name, $notes, $id);
+                $stmt->execute();
+                set_flash('Brand berhasil diupdate.', 'success');
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() === 1062) {
+                    set_flash('Gagal: Nama brand sudah ada.', 'danger');
+                } else {
+                    set_flash('Gagal mengupdate brand.', 'danger');
+                }
+            }
         }
 
     } elseif ($action === 'delete') {
