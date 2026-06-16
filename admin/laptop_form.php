@@ -10,6 +10,7 @@ $id      = isset($_GET['id']) ? (int)$_GET['id'] : null;
 $is_edit = $id !== null && $id > 0;
 $laptop  = null;
 $errors  = [];
+$original_image_path = null;
 
 if ($is_edit) {
     $laptop = get_laptop($conn, $id);
@@ -18,6 +19,7 @@ if ($is_edit) {
         header('Location: laptops.php');
         exit;
     }
+    $original_image_path = $laptop['image_path'] ?? null;
 }
 
 $brands = get_brands($conn);
@@ -38,36 +40,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($model === '')                                $errors[] = 'Model wajib diisi.';
     if (strlen($model) > 100)                         $errors[] = 'Model maksimal 100 karakter.';
     if ($brand_id <= 0)                               $errors[] = 'Brand wajib dipilih.';
-    if ($release_year < 2000 || $release_year > 2025) $errors[] = 'Tahun rilis harus antara 2000–2025.';
+    if ($release_year < 2000 || $release_year > 2026) $errors[] = 'Tahun rilis harus antara 2000–2026.';
     if ($cpu_tier < 1 || $cpu_tier > 3)               $errors[] = 'CPU Tier tidak valid.';
     if ($ram_gb <= 0)                                  $errors[] = 'RAM harus lebih dari 0.';
     if ($storage_gb <= 0)                              $errors[] = 'Storage harus lebih dari 0.';
     if ($condition < 1 || $condition > 4)              $errors[] = 'Kondisi tidak valid.';
     if ($price <= 0)                                   $errors[] = 'Harga harus lebih dari 0.';
 
+    // Image upload validation (only runs if a file was submitted)
+    $image_path = $original_image_path; // default: keep existing (edit) or null (add)
+    $has_file   = isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE;
+
+    if ($has_file) {
+        $file = $_FILES['image'];
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $errors[] = 'Upload gagal (kode error: ' . $file['error'] . ').';
+        } elseif ($file['size'] > 2 * 1024 * 1024) {
+            $errors[] = 'Ukuran gambar maksimal 2 MB.';
+        } else {
+            $info = @getimagesize($file['tmp_name']);
+            $allowed = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP];
+            if (!$info || !in_array($info[2], $allowed)) {
+                $errors[] = 'Format gambar harus JPG, PNG, atau WebP.';
+            }
+        }
+    }
+
+    if (empty($errors)) {
+        // Commit image: upload new file or remove
+        if ($has_file) {
+            $info = getimagesize($_FILES['image']['tmp_name']);
+            $ext  = match($info[2]) {
+                IMAGETYPE_JPEG => 'jpg',
+                IMAGETYPE_PNG  => 'png',
+                IMAGETYPE_WEBP => 'webp',
+                default        => 'jpg',
+            };
+            $upload_dir = __DIR__ . '/../uploads/laptops/';
+            $filename   = uniqid('laptop_', true) . '.' . $ext;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $filename)) {
+                // Delete old file if replacing
+                if ($original_image_path && file_exists(__DIR__ . '/../' . $original_image_path)) {
+                    @unlink(__DIR__ . '/../' . $original_image_path);
+                }
+                $image_path = 'uploads/laptops/' . $filename;
+            } else {
+                $errors[] = 'Gagal menyimpan gambar. Pastikan folder uploads/ dapat ditulis.';
+            }
+        }
+
+        // Handle "remove image" checkbox (only if no new file uploaded)
+        if (!$has_file && isset($_POST['remove_image'])) {
+            if ($original_image_path && file_exists(__DIR__ . '/../' . $original_image_path)) {
+                @unlink(__DIR__ . '/../' . $original_image_path);
+            }
+            $image_path = null;
+        }
+    }
+
     if (empty($errors)) {
         if ($is_edit) {
             $stmt = $conn->prepare(
                 "UPDATE laptops
                  SET model=?, brand_id=?, release_year=?, cpu_tier=?,
-                     ram_gb=?, storage_gb=?, `condition`=?, has_warranty=?, price=?
+                     ram_gb=?, storage_gb=?, `condition`=?, has_warranty=?,
+                     price=?, image_path=?
                  WHERE id=?"
             );
-            $stmt->bind_param('siiiiiiiii',
+            $stmt->bind_param('siiiiiiiisi',
                 $model, $brand_id, $release_year, $cpu_tier,
-                $ram_gb, $storage_gb, $condition, $has_warranty, $price, $id
+                $ram_gb, $storage_gb, $condition, $has_warranty,
+                $price, $image_path, $id
             );
             $stmt->execute();
             set_flash('Laptop berhasil diupdate.', 'success');
         } else {
             $stmt = $conn->prepare(
                 "INSERT INTO laptops
-                 (model, brand_id, release_year, cpu_tier, ram_gb, storage_gb, `condition`, has_warranty, price)
-                 VALUES (?,?,?,?,?,?,?,?,?)"
+                 (model, brand_id, release_year, cpu_tier, ram_gb, storage_gb,
+                  `condition`, has_warranty, price, image_path)
+                 VALUES (?,?,?,?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param('siiiiiiii',
+            $stmt->bind_param('siiiiiiisi',
                 $model, $brand_id, $release_year, $cpu_tier,
-                $ram_gb, $storage_gb, $condition, $has_warranty, $price
+                $ram_gb, $storage_gb, $condition, $has_warranty,
+                $price, $image_path
             );
             $stmt->execute();
             set_flash('Laptop berhasil ditambahkan.', 'success');
@@ -77,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Re-populate form on error
+    // Re-populate form on validation failure
     $laptop = [
         'model'        => $model,
         'brand_id'     => $brand_id,
@@ -88,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'condition'    => $condition,
         'has_warranty' => $has_warranty,
         'price'        => $price,
+        'image_path'   => $original_image_path, // keep original on re-render
     ];
 }
 
@@ -110,7 +168,8 @@ require_once '../includes/header_admin.php';
 </div>
 <?php endif; ?>
 
-<form method="POST" id="laptopForm" class="needs-validation" novalidate>
+<form method="POST" id="laptopForm" class="needs-validation" novalidate
+      enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
     <div class="row g-4">
 
@@ -144,9 +203,9 @@ require_once '../includes/header_admin.php';
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tahun Rilis <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" name="release_year"
-                                   min="2000" max="2025" required
+                                   min="2000" max="2026" required
                                    value="<?= h((string)($laptop['release_year'] ?? '')) ?>">
-                            <div class="invalid-feedback">Tahun 2000–2025.</div>
+                            <div class="invalid-feedback">Tahun 2000–2026.</div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">CPU Tier <span class="text-danger">*</span></label>
@@ -203,6 +262,27 @@ require_once '../includes/header_admin.php';
                                    <?= !empty($laptop['has_warranty']) ? 'checked' : '' ?>>
                             <label class="form-check-label" for="has_warranty">Ada Garansi</label>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Foto Laptop</label>
+                        <?php if (!empty($laptop['image_path'])): ?>
+                        <div class="mb-2">
+                            <img src="<?= BASE_URL . h($laptop['image_path']) ?>"
+                                 alt="Foto saat ini"
+                                 class="img-thumbnail d-block mb-1"
+                                 style="max-height:120px;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="remove_image" id="remove_image">
+                                <label class="form-check-label text-danger small"
+                                       for="remove_image">Hapus foto ini</label>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <input type="file" class="form-control" name="image"
+                               accept="image/jpeg,image/png,image/webp">
+                        <div class="form-text">JPG, PNG, atau WebP · Maks 2 MB · Opsional</div>
                     </div>
 
                 </div>
