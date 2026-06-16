@@ -17,3 +17,7 @@ Thumbs.db
 .archived
 *.local.*
 *.private.*
+
+# Uploaded files (keep dir, ignore content)
+uploads/laptops/*
+!uploads/laptops/.gitkeep
