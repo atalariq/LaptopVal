@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           `condition`, has_warranty, price, source_url)
                          VALUES (?,?,?,?,?,?,?,?,?,?)"
                     );
-                    $stmt->bind_param('siiiiiiis',
+                    $stmt->bind_param('siiiiiiiis',
                         $model, $brand_id, $release_year, $cpu_tier,
                         $ram_gb, $storage_gb, $condition, $has_warranty, $price,
                         $source_url === '' ? null : $source_url
