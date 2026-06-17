@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $condition    = (int)($_POST['condition'] ?? 0);
     $has_warranty = isset($_POST['has_warranty']) ? 1 : 0;
     $price        = (int)($_POST['price'] ?? 0);
+    $source_url   = trim($_POST['source_url'] ?? '');
 
     if ($model === '')                                $errors[] = 'Model wajib diisi.';
     if (strlen($model) > 100)                         $errors[] = 'Model maksimal 100 karakter.';
@@ -48,6 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($storage_gb <= 0)                              $errors[] = 'Storage harus lebih dari 0.';
     if ($condition < 1 || $condition > 4)              $errors[] = 'Kondisi tidak valid.';
     if ($price <= 0)                                   $errors[] = 'Harga harus lebih dari 0.';
+    if ($source_url !== '' && !filter_var($source_url, FILTER_VALIDATE_URL)) {
+        $errors[] = 'Source URL tidak valid.';
+    }
+    if (strlen($source_url) > 255) $errors[] = 'Source URL maksimal 255 karakter.';
 
     // Image upload validation (only runs if a file was submitted)
     $image_path = $original_image_path; // default: keep existing (edit) or null (add)
@@ -105,18 +110,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
+        // Normalize empty string to NULL for source_url
+        $source_url_db = $source_url === '' ? null : $source_url;
+
         if ($is_edit) {
             $stmt = $conn->prepare(
                 "UPDATE laptops
                  SET model=?, brand_id=?, release_year=?, cpu_tier=?,
                      ram_gb=?, storage_gb=?, `condition`=?, has_warranty=?,
-                     price=?, image_path=?, updated_by=?
+                     price=?, image_path=?, source_url=?, updated_by=?
                  WHERE id=?"
             );
-            $stmt->bind_param('siiiiiiiisii',
+            $stmt->bind_param('siiiiiiiissii',
                 $model, $brand_id, $release_year, $cpu_tier,
                 $ram_gb, $storage_gb, $condition, $has_warranty,
-                $price, $image_path, $current_user_id, $id
+                $price, $image_path, $source_url_db, $current_user_id, $id
             );
             $stmt->execute();
             set_flash('Laptop berhasil diupdate.', 'success');
@@ -124,13 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare(
                 "INSERT INTO laptops
                  (model, brand_id, release_year, cpu_tier, ram_gb, storage_gb,
-                  `condition`, has_warranty, price, image_path, created_by)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+                  `condition`, has_warranty, price, image_path, source_url, created_by)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
             );
-            $stmt->bind_param('siiiiiiisii',
+            $stmt->bind_param('siiiiiiiissi',
                 $model, $brand_id, $release_year, $cpu_tier,
                 $ram_gb, $storage_gb, $condition, $has_warranty,
-                $price, $image_path, $current_user_id
+                $price, $image_path, $source_url_db, $current_user_id
             );
             $stmt->execute();
             set_flash('Laptop berhasil ditambahkan.', 'success');
@@ -151,6 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'condition'    => $condition,
         'has_warranty' => $has_warranty,
         'price'        => $price,
+        'source_url'   => $source_url,
         'image_path'   => $original_image_path, // keep original on re-render
     ];
 }
@@ -259,6 +268,13 @@ require_once '../includes/header_admin.php';
                             <div class="form-text">Contoh: 3500 = Rp 3.500.000</div>
                             <div class="invalid-feedback">Harga harus lebih dari 0.</div>
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Source URL <span class="text-muted small">(opsional)</span></label>
+                        <input type="url" class="form-control" name="source_url" maxlength="255"
+                               placeholder="https://..." value="<?= h($laptop['source_url'] ?? '') ?>">
+                        <div class="form-text">Link listing asal, agar bisa diverifikasi.</div>
                     </div>
 
                     <div class="mb-3">

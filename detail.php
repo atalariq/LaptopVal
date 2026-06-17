@@ -62,6 +62,10 @@ require_once 'includes/header_public.php';
                         <tr><th class="bg-light">Kondisi</th><td><?= h(condition_label($laptop['condition'])) ?></td></tr>
                         <tr><th class="bg-light">Garansi</th><td><?= $laptop['has_warranty'] ? 'Ada' : 'Tidak' ?></td></tr>
                         <tr><th class="bg-light">Harga</th><td class="fw-bold"><?= h(format_price($laptop['price'])) ?></td></tr>
+                        <?php if (!empty($laptop['source_url'])): ?>
+                        <tr><th class="bg-light">Sumber</th>
+                            <td><a href="<?= h($laptop['source_url']) ?>" target="_blank" rel="noopener">Lihat sumber &#8599;</a></td></tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
