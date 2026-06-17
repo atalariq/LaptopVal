@@ -6,6 +6,8 @@ require_once '../includes/functions.php';
 
 require_login();
 
+$load_chartjs = true;
+
 $total_laptops = get_total_laptops($conn);
 $brands        = get_brands($conn);
 $total_brands  = count($brands);
@@ -119,5 +121,90 @@ require_once '../includes/header_admin.php';
         <?php endif; ?>
     </div>
 </div>
+
+<!-- Charts row -->
+<div class="row g-4 mt-2">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header fw-bold">Distribusi Brand (Jumlah Listing)</div>
+            <div class="card-body">
+                <canvas id="brandPieChart" height="280"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header fw-bold">Rata-rata Score per Brand</div>
+            <div class="card-body">
+                <canvas id="avgScoreChart" height="280"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const PIE_COLORS = [
+        '#7aa2f7','#9ece6a','#e0af68','#f7768e','#bb9af7',
+        '#ff9e64','#7dcfff','#73daca','#2ac3de','#b4f9f8'
+    ];
+    const LABEL_COLOR = '#c0caf5';
+    const GRID_COLOR  = '#2f3549';
+
+    fetch('dashboard_charts.php')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+
+            new Chart(document.getElementById('brandPieChart'), {
+                type: 'pie',
+                data: {
+                    labels: data.brands.labels,
+                    datasets: [{
+                        data: data.brands.data,
+                        backgroundColor: PIE_COLORS.slice(0, data.brands.labels.length),
+                        borderColor: '#1a1b26',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { labels: { color: LABEL_COLOR } }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('avgScoreChart'), {
+                type: 'bar',
+                data: {
+                    labels: data.avgScores.labels,
+                    datasets: [{
+                        label: 'Avg Score',
+                        data: data.avgScores.data,
+                        backgroundColor: 'rgba(122, 162, 247, 0.7)',
+                        borderColor: '#7aa2f7',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true, max: 100,
+                            ticks: { color: LABEL_COLOR },
+                            grid:  { color: GRID_COLOR  }
+                        },
+                        x: {
+                            ticks: { color: LABEL_COLOR },
+                            grid:  { color: GRID_COLOR  }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: LABEL_COLOR } }
+                    }
+                }
+            });
+
+        });
+}());
+</script>
 
 <?php require_once '../includes/footer.php'; ?>

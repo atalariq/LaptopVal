@@ -17,6 +17,9 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
     <title><?= h($page_title) ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <?php if (!empty($load_chartjs)): ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <?php endif; ?>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark">
