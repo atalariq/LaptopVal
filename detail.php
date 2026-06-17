@@ -43,6 +43,11 @@ require_once 'includes/header_public.php';
          class="img-fluid rounded shadow-sm"
          style="max-height:350px; width:100%; object-fit:cover;">
 </div>
+<?php else: ?>
+<div class="card-img-placeholder d-flex align-items-center justify-content-center rounded mb-4"
+     style="height:200px; background: <?= h(brand_placeholder_color($laptop['brand'])) ?>;">
+    <span class="fw-bold text-white" style="font-size:5rem;"><?= h(mb_strtoupper(mb_substr($laptop['brand'], 0, 1))) ?></span>
+</div>
 <?php endif; ?>
 
 <div class="row g-4">

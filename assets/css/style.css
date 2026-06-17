@@ -90,6 +90,16 @@ body {
   color: var(--text);
 }
 
+/* ── Login background ─────────────────────────────────────────────── */
+.login-bg {
+  background: radial-gradient(
+    ellipse at center,
+    var(--bg-alt) 0%,
+    var(--bg-primary) 100%
+  );
+  min-height: 100vh;
+}
+
 /* ── Navbar ───────────────────────────────────────────────────────── */
 .navbar {
   background-color: var(--bg-alt) !important;

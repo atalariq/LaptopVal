@@ -66,6 +66,14 @@ function cpu_label(int $tier): string
     };
 }
 
+// ── Brand placeholder color ──────────────────────────────────────────────────
+/** Deterministic HSL background for a brand initial placeholder. */
+function brand_placeholder_color(string $brand): string
+{
+    $hue = crc32($brand) % 360;
+    return "hsl($hue, 45%, 45%)";
+}
+
 // ── Queries ──────────────────────────────────────────────────────────────────
 
 /**

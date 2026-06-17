@@ -92,9 +92,9 @@ require_once 'includes/header_public.php';
                  class="card-img-top"
                  style="height:180px; object-fit:cover;">
             <?php else: ?>
-            <div class="bg-light d-flex align-items-center justify-content-center"
-                 style="height:180px;">
-                <span class="text-muted small">Foto tidak tersedia</span>
+            <div class="card-img-placeholder d-flex align-items-center justify-content-center"
+                 style="height:140px; background: <?= h(brand_placeholder_color($l['brand'])) ?>;">
+                <span class="fs-1 fw-bold text-white"><?= h(mb_strtoupper(mb_substr($l['brand'], 0, 1))) ?></span>
             </div>
             <?php endif; ?>
             <div class="card-body d-flex flex-column">
