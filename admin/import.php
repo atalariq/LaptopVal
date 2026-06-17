@@ -52,6 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $row_errors = [];
                     if ($brand_name === '')                            $row_errors[] = 'brand kosong';
                     if ($model === '')                                 $row_errors[] = 'model kosong';
+                    if (mb_strlen($brand_name) > 50)                  $row_errors[] = 'brand maksimal 50 karakter';
+                    if (mb_strlen($model) > 100)                      $row_errors[] = 'model maksimal 100 karakter';
                     if ($release_year < 2000 || $release_year > 2026) $row_errors[] = 'tahun tidak valid';
                     if ($cpu_tier < 1 || $cpu_tier > 3)               $row_errors[] = 'cpu_tier harus 1-3';
                     if ($ram_gb <= 0)                                  $row_errors[] = 'ram_gb harus > 0';
@@ -78,7 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         $stmt = $conn->prepare("INSERT INTO brands (name) VALUES (?)");
                         $stmt->bind_param('s', $brand_name);
-                        $stmt->execute();
+                        if (!$stmt->execute()) {
+                            $row_log[] = ['row' => $row_num, 'status' => 'error',
+                                          'model' => $model,
+                                          'msg' => 'Gagal menambah brand: ' . $conn->error];
+                            continue;
+                        }
                         $brand_id = (int) $conn->insert_id;
                     }
 
@@ -105,7 +112,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $model, $brand_id, $release_year, $cpu_tier,
                         $ram_gb, $storage_gb, $condition, $has_warranty, $price
                     );
-                    $stmt->execute();
+                    if (!$stmt->execute()) {
+                        $row_log[] = ['row' => $row_num, 'status' => 'error',
+                                      'model' => $brand_name . ' ' . $model,
+                                      'msg' => 'Gagal insert: ' . $conn->error];
+                        continue;
+                    }
                     $inserted++;
                     $row_log[] = ['row' => $row_num, 'status' => 'ok',
                                   'model' => $brand_name . ' ' . $model,
