@@ -83,7 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $filename)) {
                 // Delete old file if replacing
                 if ($original_image_path && file_exists(__DIR__ . '/../' . $original_image_path)) {
-                    @unlink(__DIR__ . '/../' . $original_image_path);
+                    if (!unlink(__DIR__ . '/../' . $original_image_path)) {
+                        error_log('LaptopVal: gagal menghapus gambar lama: ' . $original_image_path);
+                    }
                 }
                 $image_path = 'uploads/laptops/' . $filename;
             } else {
@@ -94,7 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle "remove image" checkbox (only if no new file uploaded)
         if (!$has_file && isset($_POST['remove_image'])) {
             if ($original_image_path && file_exists(__DIR__ . '/../' . $original_image_path)) {
-                @unlink(__DIR__ . '/../' . $original_image_path);
+                if (!unlink(__DIR__ . '/../' . $original_image_path)) {
+                    error_log('LaptopVal: gagal menghapus gambar lama: ' . $original_image_path);
+                }
             }
             $image_path = null;
         }

@@ -12,10 +12,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'delete') {
         $id = (int)($_GET['id'] ?? 0);
+        $laptop = get_laptop($conn, $id); // fetch image_path before deleting
         $stmt = $conn->prepare("DELETE FROM laptops WHERE id = ?");
         $stmt->bind_param('i', $id);
-        $stmt->execute();
-        set_flash('Laptop berhasil dihapus.', 'success');
+        if ($stmt->execute()) {
+            if ($laptop && !empty($laptop['image_path'])) {
+                $file_path = __DIR__ . '/../' . $laptop['image_path'];
+                if (file_exists($file_path)) unlink($file_path);
+            }
+            set_flash('Laptop berhasil dihapus.', 'success');
+        } else {
+            set_flash('Gagal menghapus laptop.', 'danger');
+        }
     }
 
     header('Location: laptops.php');
