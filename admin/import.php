@@ -202,6 +202,11 @@ require_once '../includes/header_admin.php';
             <strong>price:</strong> ribuan IDR (3500 = Rp 3.5jt) &nbsp;|&nbsp;
             <strong>source:</strong> URL (opsional, max 255 karakter)
         </p>
+        <p class="mb-3">
+            <a href="sample_laptops.csv" download class="btn btn-outline-secondary btn-sm">
+                &#8659; Download contoh CSV
+            </a>
+        </p>
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
             <div class="mb-3">

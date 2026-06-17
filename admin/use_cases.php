@@ -95,7 +95,8 @@ require_once '../includes/header_admin.php';
                         </button>
                         <button class="btn btn-sm btn-outline-danger ms-1"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                data-action="use_cases.php?action=delete&id=<?= (int)$uc['id'] ?>">
+                                data-action="use_cases.php?action=delete&id=<?= (int)$uc['id'] ?>"
+                                aria-label="Hapus use case">
                             Hapus
                         </button>
                     </td>
@@ -218,9 +219,6 @@ document.getElementById('editModal').addEventListener('show.bs.modal', function(
     document.getElementById('editRam').value      = btn.dataset.ram;
     document.getElementById('editCpu').value      = btn.dataset.cpu;
     document.getElementById('editStorage').value  = btn.dataset.storage;
-});
-document.getElementById('deleteModal').addEventListener('show.bs.modal', function(e) {
-    document.getElementById('deleteForm').action = e.relatedTarget.dataset.action;
 });
 </script>
 

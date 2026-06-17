@@ -75,7 +75,8 @@ require_once '../includes/header_admin.php';
                         <a href="laptop_form.php?id=<?= (int)$l['id'] ?>" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <button class="btn btn-sm btn-outline-danger ms-1"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                data-action="laptops.php?action=delete&id=<?= (int)$l['id'] ?>">
+                                data-action="laptops.php?action=delete&id=<?= (int)$l['id'] ?>"
+                                aria-label="Hapus laptop">
                             Hapus
                         </button>
                     </td>
@@ -107,11 +108,5 @@ require_once '../includes/header_admin.php';
         </div>
     </div>
 </div>
-
-<script>
-document.getElementById('deleteModal').addEventListener('show.bs.modal', function(e) {
-    document.getElementById('deleteForm').action = e.relatedTarget.dataset.action;
-});
-</script>
 
 <?php require_once '../includes/footer.php'; ?>

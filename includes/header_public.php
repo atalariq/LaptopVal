@@ -19,6 +19,10 @@ $page_title = isset($title) ? $title . ' — ' . APP_NAME : APP_NAME;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
+    <meta name="description" content="<?= h(APP_TAGLINE) ?>">
+    <meta property="og:title" content="<?= h(APP_NAME) ?>">
+    <meta property="og:description" content="<?= h(APP_TAGLINE) ?>">
+    <meta property="og:image" content="<?= BASE_URL ?>logo.svg">
     <link rel="icon" type="image/svg+xml" href="<?= BASE_URL ?>favicon/favicon.svg">
     <link rel="icon" type="image/png" sizes="96x96" href="<?= BASE_URL ?>favicon/favicon-96x96.png">
     <link rel="shortcut icon" href="<?= BASE_URL ?>favicon/favicon.ico">

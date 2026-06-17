@@ -9,7 +9,7 @@ require_once 'includes/header_public.php';
 // favicon links will be included by header_public.php
 ?>
 <div class="text-center py-5">
-    <div class="display-1 fw-bold" style="color: var(--tn-purple, #bb9af7);">404</div>
+    <div class="display-1 fw-bold text-primary">404</div>
     <h2 class="mb-3">Halaman Tidak Ditemukan</h2>
     <p class="text-muted mb-4">Laptop yang kamu cari tidak ada atau sudah dihapus.</p>
     <a href="<?= BASE_URL ?>index.php" class="btn btn-primary px-4">
