@@ -174,3 +174,64 @@ function get_best_laptops(mysqli $conn, int $limit = 5): array
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
+
+// ── Pagination ───────────────────────────────────────────────────────
+define('LAPTOPS_PER_PAGE', 9);
+
+/** Count laptops matching optional use-case filter. */
+function count_laptops(mysqli $conn, int $use_case_id = 0): int
+{
+    if ($use_case_id > 0) {
+        $sql = "SELECT COUNT(*)
+                FROM v_laptop_evaluations l
+                JOIN use_cases u ON u.id = ?
+                WHERE l.ram_gb     >= u.min_ram_gb
+                  AND l.cpu_tier   >= u.min_cpu_tier
+                  AND l.storage_gb >= u.min_storage";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $use_case_id);
+        $stmt->execute();
+        return (int) $stmt->get_result()->fetch_row()[0];
+    }
+    return (int) $conn->query("SELECT COUNT(*) FROM v_laptop_evaluations")->fetch_row()[0];
+}
+
+/**
+ * Paginated laptop list.
+ * $sort_sql MUST come from a whitelist array — never accept raw user input here.
+ */
+function get_laptops_paginated(
+    mysqli $conn,
+    int $use_case_id,
+    string $sort_sql,
+    int $limit,
+    int $offset
+): array {
+    if ($use_case_id > 0) {
+        $sql = "SELECT l.id, l.model, l.brand, l.price, l.ram_gb,
+                       l.storage_gb, l.`condition`, l.has_warranty,
+                       l.cpu_tier, l.release_year, l.image_path,
+                       l.value_score, l.verdict, l.listed_at
+                FROM v_laptop_evaluations l
+                JOIN use_cases u ON u.id = ?
+                WHERE l.ram_gb     >= u.min_ram_gb
+                  AND l.cpu_tier   >= u.min_cpu_tier
+                  AND l.storage_gb >= u.min_storage
+                ORDER BY {$sort_sql}
+                LIMIT ? OFFSET ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('iii', $use_case_id, $limit, $offset);
+    } else {
+        $sql = "SELECT id, model, brand, price, ram_gb,
+                       storage_gb, `condition`, has_warranty,
+                       cpu_tier, release_year, image_path,
+                       value_score, verdict, listed_at
+                FROM v_laptop_evaluations
+                ORDER BY {$sort_sql}
+                LIMIT ? OFFSET ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ii', $limit, $offset);
+    }
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
