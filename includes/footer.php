@@ -10,6 +10,12 @@ $flash = get_flash();
 </div>
 <?php endif; ?>
 
+<footer class="text-center text-muted small py-4 mt-4 border-top">
+    <a href="<?= h(REQUEST_UPDATE_URL) ?>" target="_blank" rel="noopener">Request update data &#8599;</a>
+    <span class="mx-2">&middot;</span>
+    <?= h(APP_NAME) ?> &copy; 2026
+</footer>
+
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="<?= BASE_URL ?>assets/js/main.js"></script>
