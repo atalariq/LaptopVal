@@ -58,10 +58,10 @@ INSERT INTO scoring_rules (factor, value_key, points, description) VALUES
 ('storage_gb', '512',   12, 'Storage 512 GB'),
 ('storage_gb', '>=1000', 15, 'Storage 1 TB atau lebih'),
 -- Kondisi (max 15)
-('condition', '1',  0, 'Buruk — banyak lecet/dent, performa menurun'),
-('condition', '2',  5, 'Cukup — ada bekas pemakaian wajar'),
-('condition', '3', 10, 'Baik — minor scratch, fungsi normal'),
-('condition', '4', 15, 'Mulus — hampir seperti baru'),
+('condition', '1',  0, 'Buruk, banyak lecet dan dent, performa ikut turun'),
+('condition', '2',  5, 'Cukup, ada bekas pemakaian tapi masih wajar'),
+('condition', '3', 10, 'Baik, cuma lecet halus dan semua fungsi normal'),
+('condition', '4', 15, 'Mulus, kondisinya hampir kayak baru'),
 -- Garansi (max 5)
 ('has_warranty', 'true',  5, 'Masih ada garansi'),
 ('has_warranty', 'false', 0, 'Tanpa garansi'),
