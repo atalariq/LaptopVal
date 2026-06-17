@@ -76,34 +76,28 @@ function get_laptops(mysqli $conn, int $use_case_id = 0): array
 {
     if ($use_case_id > 0) {
         // Q2: JOIN + filter by use case requirements
-        $sql = "SELECT l.id, l.model, b.name AS brand, l.price, l.ram_gb,
+        $sql = "SELECT l.id, l.model, l.brand, l.price, l.ram_gb,
                        l.storage_gb, l.`condition`, l.has_warranty,
                        l.cpu_tier, l.release_year, l.listed_at, l.image_path,
-                       usr.username AS created_by_name,
-                       e.value_score, e.verdict
-                FROM laptops l
-                JOIN brands b ON l.brand_id = b.id
-                JOIN evaluations e ON e.laptop_id = l.id
-                LEFT JOIN users usr ON l.created_by = usr.id
+                       l.created_by_name,
+                       l.value_score, l.verdict
+                FROM v_laptop_evaluations l
                 JOIN use_cases u ON u.id = ?
                 WHERE l.ram_gb >= u.min_ram_gb
                   AND l.cpu_tier >= u.min_cpu_tier
                   AND l.storage_gb >= u.min_storage
-                ORDER BY e.value_score DESC";
+                ORDER BY l.value_score DESC";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $use_case_id);
     } else {
         // Q1: simple JOIN all laptops
-        $sql = "SELECT l.id, l.model, b.name AS brand, l.price, l.ram_gb,
-                       l.storage_gb, l.`condition`, l.has_warranty,
-                       l.cpu_tier, l.release_year, l.listed_at, l.image_path,
-                       usr.username AS created_by_name,
-                       e.value_score, e.verdict
-                FROM laptops l
-                JOIN brands b ON l.brand_id = b.id
-                JOIN evaluations e ON e.laptop_id = l.id
-                LEFT JOIN users usr ON l.created_by = usr.id
-                ORDER BY e.value_score DESC";
+        $sql = "SELECT id, model, brand, price, ram_gb,
+                       storage_gb, `condition`, has_warranty,
+                       cpu_tier, release_year, listed_at, image_path,
+                       created_by_name,
+                       value_score, verdict
+                FROM v_laptop_evaluations
+                ORDER BY value_score DESC";
         $stmt = $conn->prepare($sql);
     }
     $stmt->execute();
@@ -113,14 +107,12 @@ function get_laptops(mysqli $conn, int $use_case_id = 0): array
 /** Single laptop detail with brand + evaluation. */
 function get_laptop(mysqli $conn, int $id): array|null
 {
-    $sql = "SELECT l.id, l.model, b.name AS brand, l.brand_id, l.price,
-                   l.ram_gb, l.storage_gb, l.`condition`, l.has_warranty,
-                   l.cpu_tier, l.release_year, l.listed_at, l.image_path,
-                   e.value_score, e.verdict, e.evaluated_at
-            FROM laptops l
-            JOIN brands b ON l.brand_id = b.id
-            JOIN evaluations e ON e.laptop_id = l.id
-            WHERE l.id = ?";
+    $sql = "SELECT id, model, brand, brand_id, price,
+                   ram_gb, storage_gb, `condition`, has_warranty,
+                   cpu_tier, release_year, listed_at, image_path,
+                   value_score, verdict, evaluated_at
+            FROM v_laptop_evaluations
+            WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $id);
     $stmt->execute();

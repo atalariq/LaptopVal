@@ -38,6 +38,9 @@ require_once '../includes/header_admin.php';
 
 <div class="card">
     <div class="card-body p-0">
+        <?php if (empty($laptops)): ?>
+        <p class="p-3 mb-0 text-muted">Belum ada data.</p>
+        <?php else: ?>
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr><th>Model</th><th>Brand</th><th>Harga</th><th>Score</th><th>Verdict</th><th>Oleh</th><th>Actions</th></tr>
@@ -67,6 +70,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
     </div>
 </div>
 

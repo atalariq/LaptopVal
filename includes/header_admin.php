@@ -6,7 +6,7 @@ $dir    = basename(dirname($_SERVER['SCRIPT_NAME']));
 function admin_nav_link(string $href, string $label, string $script, string $dir): string {
     $file    = basename($href);
     $active  = ($dir === 'admin' && $script === $file) ? ' active' : '';
-    return '<li class="nav-item"><a class="nav-link' . $active . '" href="' . $href . '">' . $label . '</a></li>';
+    return '<li class="nav-item"><a class="nav-link' . $active . '" href="' . $href . '">' . h($label) . '</a></li>';
 }
 ?>
 <!DOCTYPE html>
@@ -43,7 +43,7 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
                 </li>
                 <?php endif; ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= BASE_URL ?>logout.php">Logout</a>
+                    <a class="nav-link" href="<?= BASE_URL ?>logout.php?token=<?= h(csrf_token()) ?>">Logout</a>
                 </li>
             </ul>
         </div>

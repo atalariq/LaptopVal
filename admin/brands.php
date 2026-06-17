@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $notes = trim($_POST['notes'] ?? '');
         if ($name === '') {
             set_flash('Nama brand wajib diisi.', 'danger');
+        } elseif (strlen($name) > 50) {
+            set_flash('Nama brand maksimal 50 karakter.', 'danger');
         } else {
             try {
                 $stmt = $conn->prepare("INSERT INTO brands (name, notes) VALUES (?, ?)");
@@ -37,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $notes = trim($_POST['notes'] ?? '');
         if ($name === '' || $id <= 0) {
             set_flash('Data tidak valid.', 'danger');
+        } elseif (strlen($name) > 50) {
+            set_flash('Nama brand maksimal 50 karakter.', 'danger');
         } else {
             try {
                 $stmt = $conn->prepare("UPDATE brands SET name = ?, notes = ? WHERE id = ?");
@@ -86,6 +90,9 @@ require_once '../includes/header_admin.php';
 
 <div class="card">
     <div class="card-body p-0">
+        <?php if (empty($brands)): ?>
+        <p class="p-3 mb-0 text-muted">Belum ada data.</p>
+        <?php else: ?>
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr><th>ID</th><th>Name</th><th>Notes</th><th>Actions</th></tr>
@@ -114,6 +121,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
     </div>
 </div>
 

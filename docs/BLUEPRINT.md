@@ -23,7 +23,6 @@
 
 **Non-goals (explicitly excluded):**
 - Public registration / user reviews
-- Image upload
 - GPU scoring / benchmark API
 - Real-time price scraping
 - AI integration
@@ -63,8 +62,13 @@ CREATE TABLE laptops (
   condition    TINYINT NOT NULL,    -- 1=buruk, 2=cukup, 3=baik, 4=mulus
   has_warranty BOOLEAN DEFAULT FALSE,
   price        INT NOT NULL,        -- ribuan IDR, e.g. 3500 = Rp3.5jt
+  image_path   VARCHAR(255) NULL,
+  created_by   INT NULL,
+  updated_by   INT NULL,
   listed_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (brand_id) REFERENCES brands(id)
+  FOREIGN KEY (brand_id) REFERENCES brands(id),
+  FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- 4. scoring_rules (seed data, shown in UI for transparency)

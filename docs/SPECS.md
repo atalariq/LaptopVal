@@ -159,7 +159,7 @@ project/
 ### `admin/laptops.php`
 **Layout:** Tabel list semua laptop + tombol "Tambah Laptop"
 
-**Columns:** Model, Brand, Harga, Score, Verdict, Actions (Edit / Delete)
+**Columns:** Model, Brand, Harga, Score, Verdict, Oleh (Creator), Actions (Edit / Delete)
 
 **Delete:** Bootstrap modal konfirmasi
 
@@ -182,6 +182,7 @@ project/
 | Kondisi | select (Buruk/Cukup/Baik/Mulus) | required |
 | Garansi | checkbox | — |
 | Harga (ribu IDR) | number | required, >0 |
+| Foto Laptop | file (JPG/PNG/WebP) | opsional, max 2MB |
 
 **Live score preview (JS):**
 - `addEventListener('input'/'change')` pada semua field

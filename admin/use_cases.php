@@ -17,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $min_storage = (int)($_POST['min_storage'] ?? 0);
         if ($name === '') {
             set_flash('Nama use case wajib diisi.', 'danger');
+        } elseif ($min_cpu < 1 || $min_cpu > 3 || $min_ram < 0 || $min_storage < 0) {
+            set_flash('Data tidak valid.', 'danger');
         } else {
             $stmt = $conn->prepare("INSERT INTO use_cases (name, min_ram_gb, min_cpu_tier, min_storage) VALUES (?,?,?,?)");
             $stmt->bind_param('siii', $name, $min_ram, $min_cpu, $min_storage);
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $min_ram     = (int)($_POST['min_ram_gb'] ?? 0);
         $min_cpu     = (int)($_POST['min_cpu_tier'] ?? 1);
         $min_storage = (int)($_POST['min_storage'] ?? 0);
-        if ($name === '' || $id <= 0) {
+        if ($name === '' || $id <= 0 || $min_cpu < 1 || $min_cpu > 3 || $min_ram < 0 || $min_storage < 0) {
             set_flash('Data tidak valid.', 'danger');
         } else {
             $stmt = $conn->prepare("UPDATE use_cases SET name=?, min_ram_gb=?, min_cpu_tier=?, min_storage=? WHERE id=?");
@@ -65,6 +67,9 @@ require_once '../includes/header_admin.php';
 
 <div class="card">
     <div class="card-body p-0">
+        <?php if (empty($use_cases)): ?>
+        <p class="p-3 mb-0 text-muted">Belum ada data.</p>
+        <?php else: ?>
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr><th>ID</th><th>Name</th><th>Min RAM</th><th>Min CPU Tier</th><th>Min Storage</th><th>Actions</th></tr>
@@ -97,6 +102,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
     </div>
 </div>
 

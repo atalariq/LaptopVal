@@ -10,6 +10,13 @@ if (is_logged_in()) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $token = $_POST['csrf_token'] ?? '';
+    if (!hash_equals(csrf_token(), $token)) {
+        set_flash('Permintaan tidak valid (CSRF). Coba lagi.', 'danger');
+        header('Location: login.php');
+        exit;
+    }
+
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -58,6 +65,7 @@ $title = 'Login';
             <?php endif; ?>
 
             <form method="POST" action="login.php" novalidate>
+                <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" name="username"
