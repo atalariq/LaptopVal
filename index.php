@@ -54,7 +54,7 @@ require_once 'includes/header_public.php';
 </div>
 
 <!-- Sort + count bar -->
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
     <span class="text-muted small"><?= (int)$total ?> laptop ditemukan</span>
     <div class="d-flex align-items-center gap-2">
         <label for="sortSelect" class="text-muted small mb-0">Urutkan:</label>

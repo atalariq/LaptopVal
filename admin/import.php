@@ -162,6 +162,7 @@ require_once '../includes/header_admin.php';
 <div class="card mb-4">
     <div class="card-header fw-bold">Log per Baris</div>
     <div class="card-body p-0">
+        <div class="table-responsive">
         <table class="table table-hover mb-0 small">
             <thead class="table-light"><tr><th>#Baris</th><th>Model</th><th>Status</th><th>Keterangan</th></tr></thead>
             <tbody>
@@ -183,6 +184,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 <?php endif; ?>

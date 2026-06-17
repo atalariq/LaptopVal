@@ -59,6 +59,7 @@ require_once '../includes/header_admin.php';
         <?php if (empty($top_laptops)): ?>
         <p class="p-3 mb-0 text-muted">Belum ada data.</p>
         <?php else: ?>
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
@@ -87,6 +88,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
         <?php endif; ?>
     </div>
 </div>
@@ -98,6 +100,7 @@ require_once '../includes/header_admin.php';
         <?php if (empty($brand_scores)): ?>
         <p class="p-3 mb-0 text-muted">Belum ada data.</p>
         <?php else: ?>
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr>
@@ -118,6 +121,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
         <?php endif; ?>
     </div>
 </div>
@@ -181,7 +185,7 @@ require_once '../includes/header_admin.php';
             },
             options: {
                 plugins: {
-                    legend: { labels: { color: c.label } }
+                    legend: { position: 'right', labels: { color: c.label, boxWidth: 12, font: { size: 11 } } }
                 }
             }
         });

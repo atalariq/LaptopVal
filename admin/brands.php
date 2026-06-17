@@ -93,6 +93,7 @@ require_once '../includes/header_admin.php';
         <?php if (empty($brands)): ?>
         <p class="p-3 mb-0 text-muted">Belum ada data.</p>
         <?php else: ?>
+        <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
                 <tr><th>ID</th><th>Name</th><th>Notes</th><th>Actions</th></tr>
@@ -121,6 +122,7 @@ require_once '../includes/header_admin.php';
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
         <?php endif; ?>
     </div>
 </div>

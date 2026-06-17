@@ -364,9 +364,16 @@ thead.table-light > tr > th {
 }
 
 /* ── Sticky score preview panel ─────────────────────────────────── */
-.score-preview-panel {
-  position: sticky;
-  top: 1rem;
+@media (min-width: 768px) {
+  .score-preview-panel {
+    position: sticky;
+    top: 1rem;
+  }
+}
+@media (max-width: 767.98px) {
+  .score-preview-panel {
+    position: static;
+  }
 }
 
 /* ── Progress bars ────────────────────────────────────────────────── */
