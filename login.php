@@ -48,8 +48,13 @@ $title = 'Login';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($title . ' — ' . APP_NAME) ?></title>
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_URL ?>favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?= BASE_URL ?>favicon/favicon-96x96.png">
+    <link rel="shortcut icon" href="<?= BASE_URL ?>favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_URL ?>favicon/apple-touch-icon.png">
+    <link rel="manifest" href="<?= BASE_URL ?>favicon/site.webmanifest">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
 <body class="bg-light">
 <div class="d-flex align-items-center justify-content-center min-vh-100">

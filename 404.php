@@ -5,6 +5,8 @@ require_once 'includes/functions.php';
 http_response_code(404);
 $title = '404 — Halaman Tidak Ditemukan';
 require_once 'includes/header_public.php';
+
+// favicon links will be included by header_public.php
 ?>
 <div class="text-center py-5">
     <div class="display-1 fw-bold" style="color: var(--tn-purple, #bb9af7);">404</div>
