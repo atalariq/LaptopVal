@@ -6,15 +6,13 @@ require_once 'includes/functions.php';
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
-    set_flash('Laptop tidak ditemukan.', 'danger');
-    header('Location: index.php');
+    include '404.php';
     exit;
 }
 
 $laptop = get_laptop($conn, $id);
 if ($laptop === null) {
-    set_flash('Laptop tidak ditemukan.', 'danger');
-    header('Location: index.php');
+    include '404.php';
     exit;
 }
 
