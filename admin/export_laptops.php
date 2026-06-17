@@ -18,12 +18,12 @@ fwrite($out, "\xEF\xBB\xBF");
 
 fputcsv($out, [
     'ID', 'Model', 'Brand', 'Harga (ribu IDR)', 'RAM (GB)', 'Storage (GB)',
-    'CPU Tier', 'Kondisi', 'Garansi', 'Tahun Rilis', 'Score', 'Verdict', 'Evaluated At',
+    'CPU Tier', 'Kondisi', 'Garansi', 'Tahun Rilis', 'Score', 'Verdict', 'Evaluated At', 'Source',
 ]);
 
 $sql = "SELECT id, model, brand, price, ram_gb, storage_gb,
                cpu_tier, `condition`, has_warranty,
-               release_year, value_score, verdict, evaluated_at
+               release_year, value_score, verdict, evaluated_at, source_url
         FROM v_laptop_evaluations
         ORDER BY value_score DESC";
 $result = $conn->query($sql);
@@ -42,6 +42,7 @@ while ($row = $result->fetch_assoc()) {
         $row['value_score'],
         $row['verdict'],
         $row['evaluated_at'],
+        $row['source_url'] ?? '',
     ]);
 }
 fclose($out);

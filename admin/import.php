@@ -12,7 +12,7 @@ $row_log    = [];
 $inserted   = 0;
 $skipped    = 0;
 
-$EXPECTED = ['brand','model','release_year','cpu_tier','ram_gb','storage_gb','condition','has_warranty','price'];
+$EXPECTED = ['brand','model','release_year','cpu_tier','ram_gb','storage_gb','condition','has_warranty','price','source'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $condition    = (int) $row[6];
                     $has_warranty = (int) $row[7];
                     $price        = (int) $row[8];
+                    $source_url   = trim($row[9] ?? '');
 
                     $row_errors = [];
                     if ($brand_name === '')                            $row_errors[] = 'brand kosong';
@@ -61,6 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($condition < 1 || $condition > 4)              $row_errors[] = 'condition harus 1-4';
                     if (!in_array($has_warranty, [0, 1], true))        $row_errors[] = 'has_warranty harus 0 atau 1';
                     if ($price <= 0)                                   $row_errors[] = 'price harus > 0';
+                    if ($source_url !== '' && !filter_var($source_url, FILTER_VALIDATE_URL)) $row_errors[] = 'source url tidak valid';
+                    if (mb_strlen($source_url) > 255)                  $row_errors[] = 'source maksimal 255 karakter';
 
                     if (!empty($row_errors)) {
                         $row_log[] = ['row' => $row_num, 'status' => 'error',
@@ -105,12 +108,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $conn->prepare(
                         "INSERT INTO laptops
                          (model, brand_id, release_year, cpu_tier, ram_gb, storage_gb,
-                          `condition`, has_warranty, price)
-                         VALUES (?,?,?,?,?,?,?,?,?)"
+                          `condition`, has_warranty, price, source_url)
+                         VALUES (?,?,?,?,?,?,?,?,?,?)"
                     );
-                    $stmt->bind_param('siiiiiiii',
+                    $stmt->bind_param('siiiiiiis',
                         $model, $brand_id, $release_year, $cpu_tier,
-                        $ram_gb, $storage_gb, $condition, $has_warranty, $price
+                        $ram_gb, $storage_gb, $condition, $has_warranty, $price,
+                        $source_url === '' ? null : $source_url
                     );
                     if (!$stmt->execute()) {
                         $row_log[] = ['row' => $row_num, 'status' => 'error',
@@ -189,11 +193,12 @@ require_once '../includes/header_admin.php';
     <div class="card-body">
         <p class="text-muted small mb-3">
             Format CSV (header wajib ada, urutan kolom harus tepat):<br>
-            <code>brand,model,release_year,cpu_tier,ram_gb,storage_gb,condition,has_warranty,price</code><br>
+            <code>brand,model,release_year,cpu_tier,ram_gb,storage_gb,condition,has_warranty,price,source</code><br>
             <strong>cpu_tier:</strong> 1–3 &nbsp;|&nbsp;
             <strong>condition:</strong> 1–4 &nbsp;|&nbsp;
             <strong>has_warranty:</strong> 0 atau 1 &nbsp;|&nbsp;
-            <strong>price:</strong> ribuan IDR (3500 = Rp 3.5jt)
+            <strong>price:</strong> ribuan IDR (3500 = Rp 3.5jt) &nbsp;|&nbsp;
+            <strong>source:</strong> URL (opsional, max 255 karakter)
         </p>
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?= h(csrf_token()) ?>">
