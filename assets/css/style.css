@@ -405,6 +405,24 @@ thead.table-light > tr > th {
   background: var(--text-muted);
 }
 
+/* ── Light-mode overrides for hardcoded dark rgba values ─────────── */
+[data-theme="light"] .card-header,
+[data-theme="light"] .card-footer {
+  background-color: var(--bg-panel);
+}
+[data-theme="light"] .hero-section {
+  background: linear-gradient(135deg, var(--bg-alt), var(--bg-panel));
+}
+[data-theme="light"] .table-light,
+[data-theme="light"] thead.table-light > tr > th {
+  --bs-table-bg: var(--bg-panel);
+  background-color: var(--bg-panel) !important;
+  color: var(--text) !important;
+}
+[data-theme="light"] .progress {
+  background: var(--bg-panel);
+}
+
 /* ── Reduced motion ──────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .card-laptop {

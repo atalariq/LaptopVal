@@ -12,6 +12,17 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+      (function () {
+        var t = localStorage.getItem("theme");
+        if (!t) {
+          t = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($page_title) ?></title>
@@ -53,6 +64,10 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
                 <?php endif; ?>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= BASE_URL ?>logout.php?token=<?= h(csrf_token()) ?>">Logout</a>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    <button id="themeToggle" type="button" class="btn btn-sm btn-outline-secondary ms-2"
+                            aria-label="Ganti tema">🌙</button>
                 </li>
             </ul>
         </div>

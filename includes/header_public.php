@@ -5,6 +5,17 @@ $page_title = isset($title) ? $title . ' — ' . APP_NAME : APP_NAME;
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+      (function () {
+        var t = localStorage.getItem("theme");
+        if (!t) {
+          t = window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
@@ -31,6 +42,10 @@ $page_title = isset($title) ? $title . ' — ' . APP_NAME : APP_NAME;
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="<?= BASE_URL ?>login.php">Admin Login</a>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    <button id="themeToggle" type="button" class="btn btn-sm btn-outline-secondary ms-2"
+                            aria-label="Ganti tema">🌙</button>
                 </li>
             </ul>
         </div>

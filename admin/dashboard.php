@@ -144,66 +144,87 @@ require_once '../includes/header_admin.php';
 
 <script>
 (function () {
-    const PIE_COLORS = [
-        '#7aa2f7','#9ece6a','#e0af68','#f7768e','#bb9af7',
-        '#ff9e64','#7dcfff','#73daca','#2ac3de','#b4f9f8'
-    ];
-    const LABEL_COLOR = '#c0caf5';
-    const GRID_COLOR  = '#2f3549';
+    // Read theme colors from CSS variables so charts adapt to dark/light theme
+    function themeColors() {
+        var s = getComputedStyle(document.documentElement);
+        return {
+            label: s.getPropertyValue("--text").trim(),
+            grid:  s.getPropertyValue("--border").trim(),
+            pie: ["--accent", "--green", "--yellow", "--red", "--purple", "--orange"]
+                .map(function (v) { return s.getPropertyValue(v).trim(); })
+                .concat(["#7dcfff", "#73daca", "#2ac3de", "#b4f9f8"]),
+        };
+    }
+
+    var chartData = null;
+    var pieChart  = null;
+    var barChart  = null;
+
+    function render() {
+        if (!chartData) return;
+        var c = themeColors();
+
+        if (pieChart)  { pieChart.destroy();  pieChart  = null; }
+        if (barChart)  { barChart.destroy();  barChart  = null; }
+
+        pieChart = new Chart(document.getElementById('brandPieChart'), {
+            type: 'pie',
+            data: {
+                labels: chartData.brands.labels,
+                datasets: [{
+                    data: chartData.brands.data,
+                    backgroundColor: c.pie.slice(0, chartData.brands.labels.length),
+                    borderColor: getComputedStyle(document.documentElement)
+                        .getPropertyValue("--bg-primary").trim(),
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { labels: { color: c.label } }
+                }
+            }
+        });
+
+        barChart = new Chart(document.getElementById('avgScoreChart'), {
+            type: 'bar',
+            data: {
+                labels: chartData.avgScores.labels,
+                datasets: [{
+                    label: 'Avg Score',
+                    data: chartData.avgScores.data,
+                    backgroundColor: c.pie[0].replace(')', ', 0.7)').replace('rgb', 'rgba'),
+                    borderColor: c.pie[0],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true, max: 100,
+                        ticks: { color: c.label },
+                        grid:  { color: c.grid  }
+                    },
+                    x: {
+                        ticks: { color: c.label },
+                        grid:  { color: c.grid  }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: c.label } }
+                }
+            }
+        });
+    }
 
     fetch('dashboard_charts.php')
         .then(function (r) { return r.json(); })
         .then(function (data) {
-
-            new Chart(document.getElementById('brandPieChart'), {
-                type: 'pie',
-                data: {
-                    labels: data.brands.labels,
-                    datasets: [{
-                        data: data.brands.data,
-                        backgroundColor: PIE_COLORS.slice(0, data.brands.labels.length),
-                        borderColor: '#1a1b26',
-                        borderWidth: 2,
-                    }]
-                },
-                options: {
-                    plugins: {
-                        legend: { labels: { color: LABEL_COLOR } }
-                    }
-                }
-            });
-
-            new Chart(document.getElementById('avgScoreChart'), {
-                type: 'bar',
-                data: {
-                    labels: data.avgScores.labels,
-                    datasets: [{
-                        label: 'Avg Score',
-                        data: data.avgScores.data,
-                        backgroundColor: 'rgba(122, 162, 247, 0.7)',
-                        borderColor: '#7aa2f7',
-                        borderWidth: 1,
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true, max: 100,
-                            ticks: { color: LABEL_COLOR },
-                            grid:  { color: GRID_COLOR  }
-                        },
-                        x: {
-                            ticks: { color: LABEL_COLOR },
-                            grid:  { color: GRID_COLOR  }
-                        }
-                    },
-                    plugins: {
-                        legend: { labels: { color: LABEL_COLOR } }
-                    }
-                }
-            });
-
+            chartData = data;
+            render();
         });
+
+    document.addEventListener('themechange', render);
 }());
 </script>
 

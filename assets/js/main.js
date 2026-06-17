@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  initThemeToggle();
   initSearch();
   initDeleteModal();
   initFlashDismiss();
@@ -151,4 +152,30 @@ function initFormValidation() {
     }
     form.classList.add("was-validated");
   });
+}
+
+// ── Dark / Light theme toggle ─────────────────────────────────────────────────
+function initThemeToggle() {
+  const btn = document.getElementById("themeToggle");
+  if (!btn) return;
+  const root = document.documentElement;
+  const sync = function () {
+    btn.textContent = root.getAttribute("data-theme") === "light" ? "☀️" : "🌙";
+  };
+  sync();
+  btn.addEventListener("click", function () {
+    const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+    root.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    sync();
+    document.dispatchEvent(new CustomEvent("themechange", { detail: next }));
+  });
+  window
+    .matchMedia("(prefers-color-scheme: light)")
+    .addEventListener("change", function (e) {
+      if (localStorage.getItem("theme")) return; // manual override wins
+      root.setAttribute("data-theme", e.matches ? "light" : "dark");
+      sync();
+      document.dispatchEvent(new CustomEvent("themechange"));
+    });
 }
