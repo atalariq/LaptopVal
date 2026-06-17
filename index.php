@@ -16,13 +16,15 @@ $allowed_sorts = [
 $sort     = array_key_exists($_GET['sort'] ?? '', $allowed_sorts) ? $_GET['sort'] : 'score_desc';
 $sort_sql = $allowed_sorts[$sort];
 
-$total       = count_laptops($conn, $use_case_id);
+$q = trim($_GET['q'] ?? '');
+
+$total       = count_laptops($conn, $use_case_id, $q);
 $total_pages = max(1, (int) ceil($total / LAPTOPS_PER_PAGE));
 $page        = min($page, $total_pages);
 $offset      = ($page - 1) * LAPTOPS_PER_PAGE;
 
 $use_cases = get_use_cases($conn);
-$laptops   = get_laptops_paginated($conn, $use_case_id, $sort_sql, LAPTOPS_PER_PAGE, $offset);
+$laptops   = get_laptops_paginated($conn, $use_case_id, $sort_sql, LAPTOPS_PER_PAGE, $offset, $q);
 
 $title = 'Temukan Laptop Bekas Terbaik';
 require_once 'includes/header_public.php';
@@ -66,9 +68,15 @@ require_once 'includes/header_public.php';
 </div>
 
 <!-- Search -->
-<div class="mb-4">
-    <input type="text" id="searchInput" class="form-control" placeholder="Cari model atau brand...">
-</div>
+<form method="GET" action="index.php" class="mb-4">
+    <?php if ($use_case_id > 0): ?><input type="hidden" name="use_case_id" value="<?= (int)$use_case_id ?>"><?php endif; ?>
+    <?php if ($sort !== 'score_desc'): ?><input type="hidden" name="sort" value="<?= h($sort) ?>"><?php endif; ?>
+    <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Cari model atau brand..."
+               value="<?= h($q) ?>">
+        <button class="btn btn-primary" type="submit">Cari</button>
+    </div>
+</form>
 
 <!-- Laptop Cards -->
 <?php if (empty($laptops)): ?>
@@ -121,6 +129,7 @@ require_once 'includes/header_public.php';
 $_base = [];
 if ($use_case_id > 0) $_base['use_case_id'] = $use_case_id;
 if ($sort !== 'score_desc') $_base['sort'] = $sort;
+if ($q !== '') $_base['q'] = $q;
 $mk_page_url = function (int $p) use ($_base): string {
     $params = $_base;
     $params['page'] = $p;
