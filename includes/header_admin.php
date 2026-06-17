@@ -26,11 +26,11 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= h($page_title) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= BASE_URL ?>favicon/favicon.svg">
-    <link rel="icon" type="image/png" sizes="96x96" href="<?= BASE_URL ?>favicon/favicon-96x96.png">
-    <link rel="shortcut icon" href="<?= BASE_URL ?>favicon/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_URL ?>favicon/apple-touch-icon.png">
-    <link rel="manifest" href="<?= BASE_URL ?>favicon/site.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_URL ?>assets/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?= BASE_URL ?>assets/favicon/favicon-96x96.png">
+    <link rel="shortcut icon" href="<?= BASE_URL ?>assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_URL ?>assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="<?= BASE_URL ?>assets/favicon/site.webmanifest">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
     <?php if (!empty($load_chartjs)): ?>
@@ -41,7 +41,7 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>admin/dashboard.php">
-            <img src="<?= BASE_URL ?>logo.svg" alt="" width="30" height="30" class="me-2 align-middle">
+            <img src="<?= BASE_URL ?>assets/logo.svg" alt="" width="30" height="30" class="me-2 align-middle">
             <?= h(APP_NAME) ?> <span class="badge bg-light text-primary ms-1" style="font-size:.65em">Admin</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdmin"
