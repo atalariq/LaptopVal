@@ -41,7 +41,7 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>admin/dashboard.php">
-            <img src="<?= BASE_URL ?>logo.svg" alt="" width="22" height="22" class="me-2 align-text-bottom">
+            <img src="<?= BASE_URL ?>logo.svg" alt="" width="30" height="30" class="me-2 align-middle">
             <?= h(APP_NAME) ?> <span class="badge bg-light text-primary ms-1" style="font-size:.65em">Admin</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdmin"

@@ -35,7 +35,7 @@ $page_title = isset($title) ? $title . ' — ' . APP_NAME : APP_NAME;
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>index.php">
-            <img src="<?= BASE_URL ?>logo.svg" alt="" width="22" height="22" class="me-2 align-text-bottom">
+            <img src="<?= BASE_URL ?>logo.svg" alt="" width="30" height="30" class="me-2 align-middle">
             <?= htmlspecialchars(APP_NAME, ENT_QUOTES, 'UTF-8') ?>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPublic"
