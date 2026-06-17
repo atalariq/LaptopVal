@@ -140,6 +140,56 @@ BEGIN
     RETURN LEAST(GREATEST(score, 0), 100);
 END //
 
+CREATE FUNCTION fn_score_breakdown(
+    p_cpu_tier     TINYINT,
+    p_ram_gb       TINYINT,
+    p_storage_gb   SMALLINT,
+    p_condition    TINYINT,
+    p_warranty     BOOLEAN,
+    p_release_year YEAR,
+    p_price        INT
+)
+RETURNS JSON DETERMINISTIC
+BEGIN
+    DECLARE v_cpu, v_ram, v_storage, v_cond, v_warr, v_age, v_price, v_spec INT DEFAULT 0;
+
+    SET v_cpu = p_cpu_tier * 10;
+
+    IF p_ram_gb >= 32 THEN SET v_ram = 25;
+    ELSEIF p_ram_gb >= 16 THEN SET v_ram = 20;
+    ELSEIF p_ram_gb >= 8 THEN SET v_ram = 10;
+    ELSE SET v_ram = 5; END IF;
+
+    IF p_storage_gb >= 1000 THEN SET v_storage = 15;
+    ELSEIF p_storage_gb >= 512 THEN SET v_storage = 12;
+    ELSEIF p_storage_gb >= 256 THEN SET v_storage = 7;
+    ELSE SET v_storage = 3; END IF;
+
+    SET v_cond = (p_condition - 1) * 5;
+    IF p_warranty THEN SET v_warr = 5; END IF;
+
+    IF p_release_year < 2018 THEN SET v_age = -5;
+    ELSEIF p_release_year < 2020 THEN SET v_age = -2; END IF;
+
+    SET v_spec = v_cpu + v_ram + v_storage + v_cond + v_warr + v_age;
+    IF v_spec > 0 THEN
+        IF (p_price / v_spec) <= 50 THEN SET v_price = 15;
+        ELSEIF (p_price / v_spec) <= 85 THEN SET v_price = 10;
+        ELSEIF (p_price / v_spec) <= 120 THEN SET v_price = 5; END IF;
+    END IF;
+
+    RETURN JSON_OBJECT(
+        'cpu',       JSON_OBJECT('points', v_cpu,     'max', 30),
+        'ram',       JSON_OBJECT('points', v_ram,     'max', 25),
+        'storage',   JSON_OBJECT('points', v_storage, 'max', 15),
+        'condition', JSON_OBJECT('points', v_cond,    'max', 15),
+        'warranty',  JSON_OBJECT('points', v_warr,    'max', 5),
+        'age',       JSON_OBJECT('points', v_age,     'max', 5),
+        'price',     JSON_OBJECT('points', v_price,   'max', 15),
+        'total',     LEAST(GREATEST(v_spec + v_price, 0), 100)
+    );
+END //
+
 -- ============================================================
 -- TRIGGERS
 -- ============================================================
