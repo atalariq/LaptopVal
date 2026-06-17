@@ -75,84 +75,22 @@ function initLiveScore() {
   updateScorePreview();
 }
 
-function calculateScore(
-  cpu_tier,
-  ram_gb,
-  storage_gb,
-  condition,
-  has_warranty,
-  release_year,
-  price,
-) {
-  let specScore = 0;
-
-  // CPU Tier (max 30)
-  specScore += parseInt(cpu_tier) * 10;
-
-  // RAM (max 25)
-  const ram = parseInt(ram_gb);
-  if (ram >= 32) specScore += 25;
-  else if (ram >= 16) specScore += 20;
-  else if (ram >= 8) specScore += 10;
-  else specScore += 5;
-
-  // Storage (max 15)
-  const storage = parseInt(storage_gb);
-  if (storage >= 1000) specScore += 15;
-  else if (storage >= 512) specScore += 12;
-  else if (storage >= 256) specScore += 7;
-  else specScore += 3;
-
-  // Kondisi (max 15)
-  specScore += (parseInt(condition) - 1) * 5;
-
-  // Garansi (max 5)
-  if (has_warranty) specScore += 5;
-
-  // Age penalty
-  const year = parseInt(release_year);
-  if (year < 2018) specScore -= 5;
-  else if (year < 2020) specScore -= 2;
-
-  // Price score: ratio = price / specScore (mirrors MySQL fn_calculate_score)
-  const p = parseInt(price);
-  let priceScore = 0;
-  if (p > 0 && specScore > 0) {
-    const ratio = p / specScore;
-    if (ratio <= 50) priceScore = 15;
-    else if (ratio <= 85) priceScore = 10;
-    else if (ratio <= 120) priceScore = 5;
-  }
-
-  return Math.max(0, specScore + priceScore);
-}
-
-function getVerdict(score) {
-  if (score >= 75) return { label: "Great Deal", cls: "success" };
-  if (score >= 55) return { label: "Fair", cls: "info" };
-  if (score >= 35) return { label: "Overpriced", cls: "warning" };
-  return { label: "Avoid", cls: "danger" };
-}
-
+let scorePreviewTimer = null;
 function updateScorePreview() {
   const form = document.getElementById("laptopForm");
   if (!form) return;
-
   const get = function (name) {
     const el = form.elements[name];
-    if (!el) return 0;
+    if (!el) return "";
     if (el.type === "checkbox") return el.checked ? 1 : 0;
     return el.value;
   };
-
-  const cpu_tier = get("cpu_tier");
-  const ram_gb = get("ram_gb");
-  const storage_gb = get("storage_gb");
-  const condition = get("condition");
-  const has_warranty = get("has_warranty");
-  const release_year = get("release_year");
-  const price = get("price");
-
+  const cpu_tier = get("cpu_tier"),
+    ram_gb = get("ram_gb"),
+    storage_gb = get("storage_gb"),
+    condition = get("condition"),
+    release_year = get("release_year"),
+    price = get("price");
   if (
     !cpu_tier ||
     !ram_gb ||
@@ -160,29 +98,45 @@ function updateScorePreview() {
     !condition ||
     !release_year ||
     !price
-  ) {
+  )
     return;
-  }
 
-  const score = calculateScore(
+  const params = new URLSearchParams({
     cpu_tier,
     ram_gb,
     storage_gb,
     condition,
-    has_warranty,
+    has_warranty: get("has_warranty"),
     release_year,
     price,
-  );
-  const verdict = getVerdict(score);
+  });
 
-  const scoreEl = document.getElementById("previewScore");
-  const verdictEl = document.getElementById("previewVerdict");
-
-  if (scoreEl) scoreEl.textContent = score;
-  if (verdictEl) {
-    verdictEl.textContent = verdict.label;
-    verdictEl.className = "badge fs-6 bg-" + verdict.cls;
-  }
+  clearTimeout(scorePreviewTimer);
+  scorePreviewTimer = setTimeout(function () {
+    fetch("score_preview.php?" + params.toString())
+      .then(function (r) {
+        return r.json();
+      })
+      .then(function (d) {
+        const scoreEl = document.getElementById("previewScore");
+        const verdictEl = document.getElementById("previewVerdict");
+        if (scoreEl) scoreEl.textContent = d.score;
+        if (verdictEl) {
+          verdictEl.textContent = d.verdict;
+          const cls =
+            {
+              "Great Deal": "success",
+              Fair: "info",
+              Overpriced: "warning",
+              Avoid: "danger",
+            }[d.verdict] || "secondary";
+          verdictEl.className = "badge fs-6 bg-" + cls;
+        }
+      })
+      .catch(function () {
+        /* keep previous value on error */
+      });
+  }, 250);
 }
 
 // ── Client-side form validation ───────────────────────────────────────────────
