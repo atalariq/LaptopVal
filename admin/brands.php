@@ -96,7 +96,7 @@ require_once '../includes/header_admin.php';
         <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
-                <tr><th>ID</th><th>Name</th><th>Notes</th><th>Actions</th></tr>
+                <tr><th>ID</th><th>Name</th><th>Notes</th><th class="col-actions">Actions</th></tr>
             </thead>
             <tbody>
                 <?php foreach ($brands as $b): ?>
@@ -104,7 +104,7 @@ require_once '../includes/header_admin.php';
                     <td><?= (int)$b['id'] ?></td>
                     <td><?= h($b['name']) ?></td>
                     <td><?= h($b['notes'] ?? '') ?></td>
-                    <td>
+                    <td class="col-actions">
                         <button class="btn btn-sm btn-outline-secondary"
                                 data-bs-toggle="modal" data-bs-target="#editModal"
                                 data-id="<?= (int)$b['id'] ?>"

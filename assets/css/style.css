@@ -176,6 +176,15 @@ thead.table-light > tr > th {
   background-color: rgba(122, 162, 247, 0.08);
   color: var(--text);
 }
+.table > tbody > tr > td,
+.table > thead > tr > th {
+  vertical-align: middle;
+}
+.col-actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: left;
+}
 
 /* ── Forms ────────────────────────────────────────────────────────── */
 .form-control,

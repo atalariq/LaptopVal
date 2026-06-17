@@ -56,7 +56,7 @@ require_once '../includes/header_admin.php';
         <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
-                <tr><th>Model</th><th>Brand</th><th>Harga</th><th>Score</th><th>Verdict</th><th>Oleh</th><th>Actions</th></tr>
+                <tr><th>Model</th><th>Brand</th><th>Harga</th><th>Score</th><th>Verdict</th><th>Oleh</th><th class="col-actions">Actions</th></tr>
             </thead>
             <tbody>
                 <?php foreach ($laptops as $l): ?>
@@ -71,7 +71,7 @@ require_once '../includes/header_admin.php';
                         </span>
                     </td>
                     <td class="text-muted small"><?= h($l['created_by_name'] ?? '—') ?></td>
-                    <td>
+                    <td class="col-actions">
                         <a href="laptop_form.php?id=<?= (int)$l['id'] ?>" class="btn btn-sm btn-outline-secondary">Edit</a>
                         <button class="btn btn-sm btn-outline-danger ms-1"
                                 data-bs-toggle="modal" data-bs-target="#deleteModal"

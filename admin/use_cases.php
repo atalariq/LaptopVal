@@ -73,7 +73,7 @@ require_once '../includes/header_admin.php';
         <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead class="table-light">
-                <tr><th>ID</th><th>Name</th><th>Min RAM</th><th>Min CPU Tier</th><th>Min Storage</th><th>Actions</th></tr>
+                <tr><th>ID</th><th>Name</th><th>Min RAM</th><th>Min CPU Tier</th><th>Min Storage</th><th class="col-actions">Actions</th></tr>
             </thead>
             <tbody>
                 <?php foreach ($use_cases as $uc): ?>
@@ -83,7 +83,7 @@ require_once '../includes/header_admin.php';
                     <td><?= (int)$uc['min_ram_gb'] ?> GB</td>
                     <td><?= h(cpu_label($uc['min_cpu_tier'])) ?></td>
                     <td><?= (int)$uc['min_storage'] ?> GB</td>
-                    <td>
+                    <td class="col-actions">
                         <button class="btn btn-sm btn-outline-secondary"
                                 data-bs-toggle="modal" data-bs-target="#editModal"
                                 data-id="<?= (int)$uc['id'] ?>"
