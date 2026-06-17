@@ -19,7 +19,7 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>admin/dashboard.php">
             <?= h(APP_NAME) ?> <span class="badge bg-light text-primary ms-1" style="font-size:.65em">Admin</span>

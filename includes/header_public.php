@@ -12,7 +12,7 @@ $page_title = isset($title) ? $title . ' — ' . APP_NAME : APP_NAME;
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand fw-bold" href="<?= BASE_URL ?>index.php">
             <?= htmlspecialchars(APP_NAME, ENT_QUOTES, 'UTF-8') ?>
