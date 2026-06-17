@@ -16,27 +16,13 @@ if ($laptop === null) {
     exit;
 }
 
-// Score breakdown (display only — mirrors fn_calculate_score, not recalculating final score)
-$cpu_pts      = (int)$laptop['cpu_tier'] * 10;
-$ram          = (int)$laptop['ram_gb'];
-$ram_pts      = $ram >= 32 ? 25 : ($ram >= 16 ? 20 : ($ram >= 8 ? 10 : 5));
-$storage      = (int)$laptop['storage_gb'];
-$storage_pts  = $storage >= 1000 ? 15 : ($storage >= 512 ? 12 : ($storage >= 256 ? 7 : 3));
-$cond_pts     = ((int)$laptop['condition'] - 1) * 5;
-$warranty_pts = $laptop['has_warranty'] ? 5 : 0;
-$year         = (int)$laptop['release_year'];
-$age_pts      = $year < 2018 ? -5 : ($year < 2020 ? -2 : 0);
-
-// Dynamic price score (mirrors MySQL ratio logic)
-$spec_score_only = $cpu_pts + $ram_pts + $storage_pts + $cond_pts + $warranty_pts + $age_pts;
-$price           = (int)$laptop['price'];
-$price_pts       = 0;
-if ($spec_score_only > 0 && $price > 0) {
-    $ratio = $price / $spec_score_only;
-    if      ($ratio <= 50)  $price_pts = 15;
-    elseif  ($ratio <= 85)  $price_pts = 10;
-    elseif  ($ratio <= 120) $price_pts = 5;
-}
+// Score breakdown — single source of truth: MySQL fn_score_breakdown (display only)
+$bstmt = $conn->prepare("SELECT fn_score_breakdown(?,?,?,?,?,?,?) AS b");
+$bstmt->bind_param('iiiiiii',
+    $laptop['cpu_tier'], $laptop['ram_gb'], $laptop['storage_gb'],
+    $laptop['condition'], $laptop['has_warranty'], $laptop['release_year'], $laptop['price']);
+$bstmt->execute();
+$bd = json_decode($bstmt->get_result()->fetch_assoc()['b'], true);
 
 $title = h($laptop['brand']) . ' ' . h($laptop['model']);
 require_once 'includes/header_public.php';
@@ -97,13 +83,13 @@ require_once 'includes/header_public.php';
 
                 <?php
                 $bars = [
-                    ['CPU Tier',  $cpu_pts,     30],
-                    ['RAM',       $ram_pts,      25],
-                    ['Storage',   $storage_pts,  15],
-                    ['Kondisi',   $cond_pts,     15],
-                    ['Garansi',   $warranty_pts,  5],
-                    ['Age',       $age_pts,       5],
-                    ['Harga',     $price_pts,    15],
+                    ['CPU Tier', $bd['cpu']['points'],       $bd['cpu']['max']],
+                    ['RAM',      $bd['ram']['points'],       $bd['ram']['max']],
+                    ['Storage',  $bd['storage']['points'],   $bd['storage']['max']],
+                    ['Kondisi',  $bd['condition']['points'], $bd['condition']['max']],
+                    ['Garansi',  $bd['warranty']['points'],  $bd['warranty']['max']],
+                    ['Age',      $bd['age']['points'],       $bd['age']['max']],
+                    ['Harga',    $bd['price']['points'],     $bd['price']['max']],
                 ];
                 foreach ($bars as [$label, $pts, $max]):
                     $pct   = $max > 0 ? max(0, min(100, (int)round($pts / $max * 100))) : 0;
