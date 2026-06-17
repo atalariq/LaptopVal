@@ -109,7 +109,7 @@ function get_laptop(mysqli $conn, int $id): array|null
 {
     $sql = "SELECT id, model, brand, brand_id, price,
                    ram_gb, storage_gb, `condition`, has_warranty,
-                   cpu_tier, release_year, listed_at, image_path,
+                   cpu_tier, release_year, listed_at, image_path, source_url,
                    value_score, verdict, evaluated_at
             FROM v_laptop_evaluations
             WHERE id = ?";

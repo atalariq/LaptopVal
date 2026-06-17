@@ -36,6 +36,7 @@ CREATE TABLE laptops (
     has_warranty BOOLEAN DEFAULT FALSE,
     price        INT NOT NULL COMMENT 'ribuan IDR, e.g. 3500 = Rp3.5jt',
     image_path   VARCHAR(255) NULL,
+    source_url   VARCHAR(255) NULL,
     created_by   INT NULL,
     updated_by   INT NULL,
     listed_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -232,7 +233,7 @@ DELIMITER ;
 CREATE VIEW v_laptop_evaluations AS
 SELECT l.id, l.model, b.name AS brand, l.price,
        l.cpu_tier, l.ram_gb, l.storage_gb, l.`condition`, l.has_warranty,
-       l.release_year, l.listed_at, l.brand_id, l.image_path,
+       l.release_year, l.listed_at, l.brand_id, l.image_path, l.source_url,
        l.created_by, usr.username AS created_by_name,
        e.value_score, e.verdict, e.evaluated_at
 FROM laptops l
