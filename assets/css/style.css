@@ -108,18 +108,26 @@ body {
 .navbar-brand {
   color: var(--accent) !important;
 }
-.navbar-dark .nav-link {
-  color: rgba(192, 202, 245, 0.75);
+.navbar .nav-link {
+  color: var(--text-muted);
 }
-.navbar-dark .nav-link:hover,
-.navbar-dark .nav-link.active {
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
   color: var(--text);
 }
-.navbar-toggler-icon {
-  filter: invert(75%) sepia(20%) saturate(300%) hue-rotate(200deg);
+.navbar-toggler {
+  border-color: var(--border);
 }
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(122, 162, 247, 0.25);
+}
+/* dark theme: ikon stroke terang */
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23c0caf5' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+/* light theme: ikon stroke gelap biar terlihat di background putih */
 [data-theme="light"] .navbar-toggler-icon {
-  filter: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%231a1b26' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 .navbar .badge.bg-light {
   background-color: var(--bg-panel) !important;

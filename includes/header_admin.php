@@ -59,7 +59,7 @@ function admin_nav_link(string $href, string $label, string $script, string $dir
             <ul class="navbar-nav ms-auto">
                 <?php if (isset($_SESSION['username'])): ?>
                 <li class="nav-item">
-                    <span class="nav-link text-white-50">Hi, <?= h($_SESSION['username']) ?></span>
+                    <span class="nav-link text-muted">Hi, <?= h($_SESSION['username']) ?></span>
                 </li>
                 <?php endif; ?>
                 <li class="nav-item">
