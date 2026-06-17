@@ -29,7 +29,11 @@ require_once '../includes/header_admin.php';
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="fw-bold mb-0">Laptops</h4>
-    <a href="laptop_form.php" class="btn btn-primary btn-sm">+ Tambah Laptop</a>
+    <div class="d-flex gap-2">
+        <a href="import.php" class="btn btn-outline-secondary btn-sm">Import CSV</a>
+        <a href="export_laptops.php" class="btn btn-outline-secondary btn-sm">Export CSV</a>
+        <a href="laptop_form.php" class="btn btn-primary btn-sm">+ Tambah Laptop</a>
+    </div>
 </div>
 
 <div class="mb-3">
