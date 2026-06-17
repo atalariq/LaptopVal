@@ -237,6 +237,22 @@ thead.table-light > tr > th {
   color: var(--text-muted);
 }
 
+/* spec chips on laptop cards */
+.spec-chip {
+  display: inline-block;
+  padding: 0.3em 0.6em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 0.5rem;
+  background-color: rgba(122, 162, 247, 0.12);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+[data-theme="light"] .spec-chip {
+  background-color: rgba(37, 99, 235, 0.1);
+}
+
 /* ── Buttons ──────────────────────────────────────────────────────── */
 .btn-primary {
   background-color: var(--accent);

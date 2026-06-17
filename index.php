@@ -106,10 +106,10 @@ require_once 'includes/header_public.php';
                 </div>
                 <p class="text-muted mb-2 fw-semibold"><?= h(format_price($l['price'])) ?></p>
                 <div class="d-flex flex-wrap gap-1 mb-3">
-                    <span class="badge bg-secondary"><?= h(cpu_label($l['cpu_tier'])) ?> CPU</span>
-                    <span class="badge bg-secondary"><?= (int)$l['ram_gb'] ?>GB RAM</span>
-                    <span class="badge bg-secondary"><?= (int)$l['storage_gb'] ?>GB Storage</span>
-                    <span class="badge bg-secondary"><?= h(condition_label($l['condition'])) ?></span>
+                    <span class="spec-chip"><?= h(cpu_label($l['cpu_tier'])) ?> CPU</span>
+                    <span class="spec-chip"><?= (int)$l['ram_gb'] ?>GB RAM</span>
+                    <span class="spec-chip"><?= (int)$l['storage_gb'] ?>GB Storage</span>
+                    <span class="spec-chip"><?= h(condition_label($l['condition'])) ?></span>
                 </div>
                 <div class="mt-auto d-flex justify-content-between align-items-center">
                     <span class="text-muted small">Score: <strong><?= (int)$l['value_score'] ?></strong></span>
