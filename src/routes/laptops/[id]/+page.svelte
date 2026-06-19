@@ -3,7 +3,7 @@
   import ScoreBreakdown from '$lib/components/ScoreBreakdown.svelte';
   import { formatPrice, regionLabel, cpuLabel, conditionLabel } from '$lib/format';
   let { data }: { data: PageData } = $props();
-  const l = data.laptop;
+  const l = $derived(data.laptop);
 </script>
 
 <svelte:head><title>{l.brand} {l.model} — LaptopVal</title></svelte:head>

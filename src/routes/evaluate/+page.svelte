@@ -1,15 +1,16 @@
 <script lang="ts">
-  import type { ActionData } from './$types';
-  import { score, DEFAULT_SCORING_CONFIG, type LaptopSpecs } from '$lib/scoring';
+  import type { ActionData, PageData } from './$types';
+  import { score, type LaptopSpecs } from '$lib/scoring';
   import ScoreBreakdown from '$lib/components/ScoreBreakdown.svelte';
   import { REGION_KEYS, regionLabel } from '$lib/format';
-  let { form }: { form: ActionData } = $props();
+  let { form, data }: { form: ActionData; data: PageData } = $props();
 
   let specs = $state<LaptopSpecs>({
     cpuTier: 2, ramGb: 8, storageGb: 256, condition: 3,
     hasWarranty: false, releaseYear: 2020, price: 4000, location: ''
   });
-  const live = $derived(score({ ...specs, location: specs.location || undefined }, DEFAULT_SCORING_CONFIG));
+  // Use the DB active config (from load) so the live preview matches the server result.
+  const live = $derived(score({ ...specs, location: specs.location || undefined }, data.config));
 </script>
 
 <svelte:head><title>Cek Laptop — LaptopVal</title></svelte:head>

@@ -1,8 +1,14 @@
 import { fail } from "@sveltejs/kit";
-import type { Actions } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 import { parseSpecs } from "$lib/schemas";
 import { score } from "$lib/scoring";
 import { getActiveScoringConfig } from "$lib/server/queries";
+
+// Expose the active scoring config so the client live preview matches the
+// server's submitted result (instead of falling back to the engine default).
+export const load: PageServerLoad = async () => ({
+  config: await getActiveScoringConfig(),
+});
 
 export const actions: Actions = {
   default: async ({ request }) => {
