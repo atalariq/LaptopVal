@@ -1,9 +1,18 @@
+/// <reference types="bun" />
 import { db } from "./index";
-import { users, brands, useCases, scoringConfig, laptops } from "./schema";
+import {
+  users,
+  brands,
+  useCases,
+  scoringConfig,
+  laptops,
+  evaluations,
+} from "./schema";
 import { DEFAULT_SCORING_CONFIG } from "$lib/scoring/config";
 
 const hash = await Bun.password.hash(process.env.ADMIN_PASSWORD ?? "admin123");
 
+await db.delete(evaluations);
 await db.delete(laptops);
 await db.delete(scoringConfig);
 await db.delete(useCases);

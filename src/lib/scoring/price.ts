@@ -5,8 +5,14 @@ export function estimateFairPrice(
   location: string | undefined,
   config: ScoringConfig,
 ): number {
-  const mult = (location && config.price.regionMultipliers[location]) || 1.0;
-  return Math.round(qualityPoints * config.price.idrPerQualityPoint * mult);
+  const mult = location
+    ? (config.price.regionMultipliers[location] ?? 1.0)
+    : 1.0;
+  // Clamp to 0 — extreme age penalties can drive qualityPoints negative.
+  return Math.max(
+    0,
+    Math.round(qualityPoints * config.price.idrPerQualityPoint * mult),
+  );
 }
 
 export function scorePrice(

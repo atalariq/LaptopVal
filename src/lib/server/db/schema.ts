@@ -9,7 +9,6 @@ import {
   timestamp,
   jsonb,
   pgEnum,
-  real,
 } from "drizzle-orm/pg-core";
 
 // Indonesian regions — fixed enum for filtering + price-range grouping
