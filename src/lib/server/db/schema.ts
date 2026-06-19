@@ -77,6 +77,14 @@ export const scoringConfig = pgTable("scoring_config", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(), // sha256(token) hex — never the raw token
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 // Cache of engine output (source of truth = engine). Populated in admin phase.
 export const evaluations = pgTable("evaluations", {
   id: serial("id").primaryKey(),
