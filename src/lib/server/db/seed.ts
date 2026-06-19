@@ -1,4 +1,4 @@
-/// <reference types="bun" />
+import argon2 from "argon2";
 import { db } from "./index";
 import {
   users,
@@ -10,7 +10,9 @@ import {
 } from "./schema";
 import { DEFAULT_SCORING_CONFIG } from "$lib/scoring/config";
 
-const hash = await Bun.password.hash(process.env.ADMIN_PASSWORD ?? "admin123");
+// Hash with the same library the app verifies with (argon2id), so seeding works
+// under Node too — not only under Bun.
+const hash = await argon2.hash(process.env.ADMIN_PASSWORD ?? "admin123");
 
 await db.delete(evaluations);
 await db.delete(laptops);
