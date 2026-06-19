@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { verify as argon2Verify } from "argon2";
 import { db } from "./db";
 import { sessions, users } from "./db/schema";
 
@@ -70,6 +71,6 @@ export async function verifyLogin(
     .where(eq(users.username, username))
     .limit(1);
   if (!u) return null;
-  const ok = await Bun.password.verify(password, u.passwordHash);
+  const ok = await argon2Verify(u.passwordHash, password);
   return ok ? { id: u.id, username: u.username } : null;
 }
