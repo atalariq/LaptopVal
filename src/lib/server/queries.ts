@@ -79,6 +79,10 @@ export function getUseCases() {
   return db.select().from(useCases).orderBy(useCases.name);
 }
 
+export function getBrands() {
+  return db.select().from(brands).orderBy(brands.name);
+}
+
 export async function priceRangeForModel(model: string, brandId: number) {
   const [r] = await db
     .select({
