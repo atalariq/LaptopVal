@@ -10,14 +10,14 @@
 
 ## Phase 1: Foundation
 
-- [ ] Scaffold SvelteKit + Bun project
-- [ ] Configure Drizzle + Postgres connection
-- [ ] Write schema (`users`, `brands`, `laptops`, `use_cases`, `scoring_config`, `evaluations`)
-- [ ] Migrations + seed data (brands, use cases, default scoring config, admin user)
-- [ ] Implement scoring engine (`src/lib/scoring/score.ts`) — pure function, no DB/framework
-- [ ] Vitest unit tests for scoring engine (factor boundaries, price deviation, regional
+- [x] Scaffold SvelteKit + Bun project
+- [x] Configure Drizzle + Postgres connection
+- [x] Write schema (`users`, `brands`, `laptops`, `use_cases`, `scoring_config`, `evaluations`)
+- [x] Migrations + seed data (brands, use cases, default scoring config, admin user)
+- [x] Implement scoring engine (`src/lib/scoring/index.ts`) — pure function, no DB/framework
+- [x] Vitest unit tests for scoring engine (factor boundaries, price deviation, regional
       adjustment, verdict band edges)
-- [ ] Docker Compose setup (app + Postgres)
+- [x] Docker Compose setup (Postgres)
 
 ## Phase 2: Public
 
