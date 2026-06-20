@@ -10,7 +10,7 @@ const VERDICT_TIER: Record<string, TierKey> = {
   "Great Deal": "s",
   Fair: "a",
   Overpriced: "b",
-  Avoid: "c",
+  Avoid: "d",
 };
 
 export const load: PageServerLoad = async ({ url }) => {
@@ -28,13 +28,20 @@ export const load: PageServerLoad = async ({ url }) => {
   let tiers: Record<TierKey, number[]>;
 
   if (hasParams) {
+    const seen = new Set<number>();
     tiers = Object.fromEntries(
       TIER_KEYS.map((k) => [
         k,
         (url.searchParams.get(k) ?? "")
           .split(",")
           .map(Number)
-          .filter((id) => Number.isInteger(id) && id > 0),
+          .filter(
+            (id) =>
+              Number.isInteger(id) &&
+              id > 0 &&
+              !seen.has(id) &&
+              (seen.add(id), true),
+          ),
       ]),
     ) as Record<TierKey, number[]>;
   } else {

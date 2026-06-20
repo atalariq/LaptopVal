@@ -134,7 +134,7 @@
             <td class="py-2 text-slate-500">{factor.label}</td>
             {#each data.items as { laptop, result } (laptop.id)}
               <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">
-                {result.breakdown[i]?.points ?? 0}{#if factor.max > 0}<span class="text-slate-400">/{factor.max}</span>{/if}
+                {result.breakdown.find(f => f.label === factor.label)?.points ?? 0}{#if factor.max > 0}<span class="text-slate-400">/{factor.max}</span>{/if}
               </td>
             {/each}
           </tr>

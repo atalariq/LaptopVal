@@ -8,7 +8,7 @@
 
 <div class="relative rounded-lg border bg-white p-4 transition hover:shadow-md">
   <!-- full-card link sits behind content -->
-  <a href="/laptops/{laptop.id}" class="absolute inset-0 rounded-lg" aria-label="{laptop.brand} {laptop.model}"></a>
+  <a href="/laptops/{laptop.id}" class="absolute inset-0 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 focus-visible:outline-offset-2" aria-label="{laptop.brand} {laptop.model}"></a>
   <div class="relative">
     <div class="flex items-start justify-between gap-2">
       <div>

@@ -12,6 +12,7 @@ export const load: PageServerLoad = async ({ url }) => {
     .split(",")
     .map(Number)
     .filter((id) => Number.isInteger(id) && id > 0)
+    .filter((id, i, arr) => arr.indexOf(id) === i)
     .slice(0, 4);
 
   const [rows, allRows, config] = await Promise.all([
