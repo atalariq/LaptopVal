@@ -94,3 +94,72 @@ export async function priceRangeForModel(model: string, brandId: number) {
     .where(and(eq(laptops.model, model), eq(laptops.brandId, brandId)));
   return { min: r?.min ?? 0, max: r?.max ?? 0, count: r?.count ?? 0 };
 }
+
+/** Postgres foreign_key_violation (e.g. deleting a brand still used by laptops). */
+export function isFkViolation(e: unknown): boolean {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "code" in e &&
+    (e as { code?: string }).code === "23503"
+  );
+}
+
+type BrandInput = { name: string; notes: string | null };
+export const createBrand = (d: BrandInput) => db.insert(brands).values(d);
+export const updateBrand = (id: number, d: BrandInput) =>
+  db.update(brands).set(d).where(eq(brands.id, id));
+export const deleteBrand = (id: number) =>
+  db.delete(brands).where(eq(brands.id, id));
+
+type UseCaseInput = {
+  name: string;
+  minRamGb: number;
+  minCpuTier: number;
+  minStorage: number;
+};
+export const createUseCase = (d: UseCaseInput) => db.insert(useCases).values(d);
+export const updateUseCase = (id: number, d: UseCaseInput) =>
+  db.update(useCases).set(d).where(eq(useCases.id, id));
+export const deleteUseCase = (id: number) =>
+  db.delete(useCases).where(eq(useCases.id, id));
+
+type LaptopInput = {
+  brandId: number;
+  model: string;
+  releaseYear: number;
+  cpuTier: number;
+  ramGb: number;
+  storageGb: number;
+  condition: number;
+  hasWarranty: boolean;
+  price: number;
+  location: string;
+  imagePath: string | null;
+  sourceUrl: string | null;
+};
+export const createLaptop = (d: LaptopInput) =>
+  db.insert(laptops).values({ ...d, location: d.location as never });
+export const updateLaptop = (id: number, d: LaptopInput) =>
+  db
+    .update(laptops)
+    .set({ ...d, location: d.location as never, updatedAt: new Date() })
+    .where(eq(laptops.id, id));
+export const deleteLaptop = (id: number) =>
+  db.delete(laptops).where(eq(laptops.id, id));
+
+export async function updateActiveScoringConfig(config: ScoringConfig) {
+  const [active] = await db
+    .select({ id: scoringConfig.id })
+    .from(scoringConfig)
+    .where(eq(scoringConfig.active, true))
+    .limit(1);
+  if (active) {
+    await db
+      .update(scoringConfig)
+      .set({ config, updatedAt: new Date() })
+      .where(eq(scoringConfig.id, active.id));
+  } else {
+    await db.insert(scoringConfig).values({ config, active: true });
+  }
+}

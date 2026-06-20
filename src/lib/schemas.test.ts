@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { evaluateSchema } from "./schemas";
+import {
+  evaluateSchema,
+  brandSchema,
+  useCaseSchema,
+  laptopSchema,
+  parseWith,
+} from "./schemas";
 
 const valid = {
   cpuTier: 2,
@@ -34,5 +40,60 @@ describe("evaluateSchema", () => {
   it("allows omitted location", () => {
     const { location, ...noLoc } = valid;
     expect(evaluateSchema.safeParse(noLoc).success).toBe(true);
+  });
+});
+
+describe("brandSchema", () => {
+  it("rejects empty name", () => {
+    expect(brandSchema.safeParse({ name: "", notes: "" }).success).toBe(false);
+  });
+  it("coerces empty notes to null", () => {
+    const r = brandSchema.parse({ name: "Lenovo", notes: "" });
+    expect(r.notes).toBeNull();
+  });
+});
+
+describe("laptopSchema", () => {
+  const validLaptop = {
+    brandId: 1,
+    model: "T480",
+    releaseYear: 2019,
+    cpuTier: 2,
+    ramGb: 16,
+    storageGb: 512,
+    condition: 3,
+    hasWarranty: "on",
+    price: 4500,
+    location: "jabodetabek",
+    imagePath: "",
+    sourceUrl: "",
+  };
+  it("accepts valid input and coerces warranty", () => {
+    const r = laptopSchema.parse(validLaptop);
+    expect(r.hasWarranty).toBe(true);
+    expect(r.imagePath).toBeNull();
+  });
+  it("rejects an unknown location", () => {
+    expect(
+      laptopSchema.safeParse({ ...validLaptop, location: "mars" }).success,
+    ).toBe(false);
+  });
+  it("rejects brandId 0", () => {
+    expect(laptopSchema.safeParse({ ...validLaptop, brandId: 0 }).success).toBe(
+      false,
+    );
+  });
+});
+
+describe("parseWith", () => {
+  it("returns a field->message error map on failure", () => {
+    const r = parseWith(useCaseSchema, {
+      name: "",
+      minRamGb: 8,
+      minCpuTier: 2,
+      minStorage: 256,
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.name).toBeTruthy();
   });
 });
