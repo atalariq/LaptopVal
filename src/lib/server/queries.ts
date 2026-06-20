@@ -42,8 +42,8 @@ export async function listLaptops(opts: ListOpts = {}): Promise<LaptopRow[]> {
   if (opts.search)
     conds.push(
       or(
-        ilike(laptops.model, `%${opts.search}%`),
-        ilike(brands.name, `%${opts.search}%`),
+        ilike(laptops.model, `%${opts.search.replace(/[%_\\]/g, "\\$&")}%`),
+        ilike(brands.name, `%${opts.search.replace(/[%_\\]/g, "\\$&")}%`),
       ),
     );
   if (opts.useCaseId) {
@@ -138,6 +138,8 @@ type LaptopInput = {
   imagePath: string | null;
   sourceUrl: string | null;
 };
+// location is `string` in LaptopInput because format.ts (client-accessible) can't import
+// the server-only pgEnum type. Zod validates the value via REGION_KEYS before reaching here.
 export const createLaptop = (d: LaptopInput) =>
   db.insert(laptops).values({ ...d, location: d.location as never });
 export const updateLaptop = (id: number, d: LaptopInput) =>
