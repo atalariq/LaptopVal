@@ -1,4 +1,4 @@
-import { and, eq, ilike, or, gte, sql } from "drizzle-orm";
+import { and, eq, ilike, inArray, or, gte, sql } from "drizzle-orm";
 import { db } from "./db";
 import { laptops, brands, useCases, scoringConfig } from "./db/schema";
 import { DEFAULT_SCORING_CONFIG, type ScoringConfig } from "$lib/scoring";
@@ -73,6 +73,15 @@ export async function getLaptopById(id: number): Promise<LaptopRow | null> {
     .where(eq(laptops.id, id))
     .limit(1);
   return (row as LaptopRow) ?? null;
+}
+
+export async function getLaptopsByIds(ids: number[]): Promise<LaptopRow[]> {
+  if (ids.length === 0) return [];
+  return db
+    .select(SELECT)
+    .from(laptops)
+    .innerJoin(brands, eq(laptops.brandId, brands.id))
+    .where(inArray(laptops.id, ids)) as Promise<LaptopRow[]>;
 }
 
 export function getUseCases() {
