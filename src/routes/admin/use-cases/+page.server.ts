@@ -25,13 +25,18 @@ export const actions: Actions = {
   update: async ({ request }) => {
     const form = Object.fromEntries(await request.formData());
     const id = Number(form.id);
+    if (!Number.isInteger(id) || id <= 0)
+      return fail(400, { error: "ID tidak valid." });
     const p = parseWith(useCaseSchema, form);
     if (!p.ok) return fail(400, { errors: p.errors, action: "update", id });
     await updateUseCase(id, p.data);
     return { success: "Use case diperbarui." };
   },
   delete: async ({ request }) => {
-    await deleteUseCase(Number((await request.formData()).get("id")));
+    const id = Number((await request.formData()).get("id"));
+    if (!Number.isInteger(id) || id <= 0)
+      return fail(400, { error: "ID tidak valid." });
+    await deleteUseCase(id);
     return { success: "Use case dihapus." };
   },
 };

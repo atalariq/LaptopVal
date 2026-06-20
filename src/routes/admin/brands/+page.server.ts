@@ -24,6 +24,8 @@ export const actions: Actions = {
   update: async ({ request }) => {
     const form = Object.fromEntries(await request.formData());
     const id = Number(form.id);
+    if (!Number.isInteger(id) || id <= 0)
+      return fail(400, { error: "ID tidak valid." });
     const p = parseWith(brandSchema, form);
     if (!p.ok) return fail(400, { errors: p.errors, action: "update", id });
     await updateBrand(id, p.data);
@@ -31,6 +33,8 @@ export const actions: Actions = {
   },
   delete: async ({ request }) => {
     const id = Number((await request.formData()).get("id"));
+    if (!Number.isInteger(id) || id <= 0)
+      return fail(400, { error: "ID tidak valid." });
     try {
       await deleteBrand(id);
     } catch (e) {
