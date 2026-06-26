@@ -55,6 +55,7 @@ Admin login: seeded from `ADMIN_USERNAME` / `ADMIN_PASSWORD` env vars.
 - **Self-service evaluator** — get a verdict without an account
 - **Compare** — side-by-side specs/scores for 2–4 laptops, shareable URL
 - **Tier list maker** — drag-drop S/A/B/C/D board, shareable via URL
+- **Benchmark-based scoring** — CPU and GPU scored from curated benchmark datasets
 - **Admin** — manage brands, laptops, use cases, and scoring configuration
 
 ## Folder Structure

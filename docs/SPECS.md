@@ -35,10 +35,12 @@
 
 - **users** — `id`, `username` (unique), `password_hash`, `created_at`. Admin accounts only.
 - **brands** — `id`, `name` (unique), `notes`.
-- **laptops** — `id`, `brand_id` (fk), `model`, `release_year`, `cpu_tier`, `ram_gb`,
-  `storage_gb`, `condition`, `has_warranty`, `price`, `location` (region), `image_path`,
-  `source_url`, `created_by` (fk), `created_at`, `updated_at`.
-- **use_cases** — `id`, `name`, `min_ram_gb`, `min_cpu_tier`, `min_storage`.
+- **cpus** — `id`, `name` (unique), `benchmark` (PassMark CPU Mark), `vendor` (Intel/AMD/Apple). Admin-managed.
+- **gpus** — `id`, `name` (unique), `benchmark` (PassMark G3D Mark), `kind` (integrated/discrete). Admin-managed.
+- **laptops** — `id`, `brand_id` (fk), `model`, `release_year`, `cpu_id` (fk → cpus), `gpu_id`
+  (fk → gpus, nullable), `ram_gb`, `storage_gb`, `condition`, `has_warranty`, `price`,
+  `location` (region), `image_path`, `source_url`, `created_by` (fk), `created_at`, `updated_at`.
+- **use_cases** — `id`, `name`, `min_ram_gb`, `min_cpu_benchmark`, `min_gpu_benchmark`, `min_storage`.
 - **scoring_config** — data-driven weights/thresholds the admin can edit. Shape: `factor`,
   rule params (thresholds → points), `weight`, `active`. The engine reads this; changing it
   recomputes cached evaluations.
@@ -55,8 +57,9 @@ table is deferred until named/saved lists are needed.
 
 Contract: `score(specs, config) → { total, verdict, breakdown[] }`
 
-Factors (config-driven): **CPU tier, RAM, storage, condition, warranty, age**. Each factor's
-thresholds → points come from `scoring_config`.
+Factors (config-driven): **CPU, GPU, RAM, storage, condition, warranty, age**. Each factor's
+thresholds → points come from `scoring_config`. CPU and GPU scores are derived from benchmark
+values (PassMark) looked up from the `cpus`/`gpus` tables.
 
 **Real price logic**: the engine derives a _fair price_ from the spec-driven quality, then
 `price_score` reflects actual-vs-fair deviation — under fair price → bonus, over fair price →
@@ -103,6 +106,8 @@ regional shift, verdict band edges).
 | `/admin`           | Dashboard: totals, avg score per brand, top deals      |
 | `/admin/laptops`   | Laptop list + create/edit form with live score preview |
 | `/admin/brands`    | Brand management                                       |
+| `/admin/cpus`      | CPU dataset management (name, PassMark benchmark)      |
+| `/admin/gpus`      | GPU dataset management (name, PassMark benchmark)      |
 | `/admin/use-cases` | Use-case management                                    |
 | `/admin/scoring`   | Edit scoring weights, thresholds, verdict bands        |
 
