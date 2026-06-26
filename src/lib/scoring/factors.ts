@@ -20,8 +20,14 @@ export function scoreQuality(
     {
       factor: "cpu",
       label: "CPU",
-      points: specs.cpuTier * config.cpuPerTier,
-      max: 3 * config.cpuPerTier,
+      points: bandPoints(specs.cpuBenchmark, config.cpu),
+      max: Math.max(...config.cpu.map((b) => b.points)),
+    },
+    {
+      factor: "gpu",
+      label: "GPU",
+      points: bandPoints(specs.gpuBenchmark, config.gpu),
+      max: Math.max(...config.gpu.map((b) => b.points)),
     },
     {
       factor: "ram",
