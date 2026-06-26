@@ -23,7 +23,7 @@
   <tbody class="divide-y">
     {#each data.useCases as u (u.id)}
       <tr>
-        <td colspan="4" class="py-1.5">
+        <td colspan="5" class="py-1.5">
           <form method="POST" action="?/update" class="flex items-center gap-2">
             <input type="hidden" name="id" value={u.id} />
             <input name="name" value={u.name} class="w-32 rounded border border-overlay px-2 py-1" />
