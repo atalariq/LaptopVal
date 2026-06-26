@@ -1,5 +1,5 @@
 {
-  "id": "51d910b9-048c-44c7-8c12-5c56cabc00d5",
+  "id": "9f6b2642-46db-4706-a227-cfadbce462e6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -33,6 +33,51 @@
       "uniqueConstraints": {
         "brands_name_unique": {
           "name": "brands_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cpus": {
+      "name": "cpus",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "benchmark": {
+          "name": "benchmark",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vendor": {
+          "name": "vendor",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "cpus_name_unique": {
+          "name": "cpus_name_unique",
           "nullsNotDistinct": false,
           "columns": [
             "name"
@@ -121,6 +166,51 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.gpus": {
+      "name": "gpus",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "benchmark": {
+          "name": "benchmark",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kind": {
+          "name": "kind",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "gpus_name_unique": {
+          "name": "gpus_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.laptops": {
       "name": "laptops",
       "schema": "",
@@ -149,11 +239,17 @@
           "primaryKey": false,
           "notNull": true
         },
-        "cpu_tier": {
-          "name": "cpu_tier",
-          "type": "smallint",
+        "cpu_id": {
+          "name": "cpu_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "gpu_id": {
+          "name": "gpu_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "ram_gb": {
           "name": "ram_gb",
@@ -241,6 +337,32 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
+        "laptops_cpu_id_cpus_id_fk": {
+          "name": "laptops_cpu_id_cpus_id_fk",
+          "tableFrom": "laptops",
+          "tableTo": "cpus",
+          "columnsFrom": [
+            "cpu_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "laptops_gpu_id_gpus_id_fk": {
+          "name": "laptops_gpu_id_gpus_id_fk",
+          "tableFrom": "laptops",
+          "tableTo": "gpus",
+          "columnsFrom": [
+            "gpu_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "laptops_created_by_users_id_fk": {
           "name": "laptops_created_by_users_id_fk",
           "tableFrom": "laptops",
@@ -300,6 +422,51 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.sessions": {
+      "name": "sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sessions_user_id_users_id_fk": {
+          "name": "sessions_user_id_users_id_fk",
+          "tableFrom": "sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.use_cases": {
       "name": "use_cases",
       "schema": "",
@@ -322,11 +489,18 @@
           "primaryKey": false,
           "notNull": true
         },
-        "min_cpu_tier": {
-          "name": "min_cpu_tier",
-          "type": "smallint",
+        "min_cpu_benchmark": {
+          "name": "min_cpu_benchmark",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "min_gpu_benchmark": {
+          "name": "min_gpu_benchmark",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "min_storage": {
           "name": "min_storage",

@@ -6,6 +6,14 @@ CREATE TABLE "brands" (
 	CONSTRAINT "brands_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
+CREATE TABLE "cpus" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"benchmark" integer NOT NULL,
+	"vendor" varchar(20) NOT NULL,
+	CONSTRAINT "cpus_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
 CREATE TABLE "evaluations" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"laptop_id" integer NOT NULL,
@@ -17,12 +25,21 @@ CREATE TABLE "evaluations" (
 	CONSTRAINT "evaluations_laptop_id_unique" UNIQUE("laptop_id")
 );
 --> statement-breakpoint
+CREATE TABLE "gpus" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"benchmark" integer NOT NULL,
+	"kind" varchar(20) NOT NULL,
+	CONSTRAINT "gpus_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
 CREATE TABLE "laptops" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"brand_id" integer NOT NULL,
 	"model" varchar(100) NOT NULL,
 	"release_year" smallint NOT NULL,
-	"cpu_tier" smallint NOT NULL,
+	"cpu_id" integer NOT NULL,
+	"gpu_id" integer,
 	"ram_gb" smallint NOT NULL,
 	"storage_gb" integer NOT NULL,
 	"condition" smallint NOT NULL,
@@ -43,11 +60,18 @@ CREATE TABLE "scoring_config" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "sessions" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" integer NOT NULL,
+	"expires_at" timestamp NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "use_cases" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(50) NOT NULL,
 	"min_ram_gb" smallint NOT NULL,
-	"min_cpu_tier" smallint NOT NULL,
+	"min_cpu_benchmark" integer NOT NULL,
+	"min_gpu_benchmark" integer DEFAULT 0 NOT NULL,
 	"min_storage" integer NOT NULL
 );
 --> statement-breakpoint
@@ -61,4 +85,7 @@ CREATE TABLE "users" (
 --> statement-breakpoint
 ALTER TABLE "evaluations" ADD CONSTRAINT "evaluations_laptop_id_laptops_id_fk" FOREIGN KEY ("laptop_id") REFERENCES "public"."laptops"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "laptops" ADD CONSTRAINT "laptops_brand_id_brands_id_fk" FOREIGN KEY ("brand_id") REFERENCES "public"."brands"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "laptops" ADD CONSTRAINT "laptops_created_by_users_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
+ALTER TABLE "laptops" ADD CONSTRAINT "laptops_cpu_id_cpus_id_fk" FOREIGN KEY ("cpu_id") REFERENCES "public"."cpus"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "laptops" ADD CONSTRAINT "laptops_gpu_id_gpus_id_fk" FOREIGN KEY ("gpu_id") REFERENCES "public"."gpus"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "laptops" ADD CONSTRAINT "laptops_created_by_users_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
