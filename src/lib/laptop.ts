@@ -1,4 +1,4 @@
-import type { LaptopSpecs, CpuTier, Condition } from "$lib/scoring";
+import type { LaptopSpecs, Condition } from "$lib/scoring";
 
 export interface LaptopRow {
   id: number;
@@ -6,7 +6,12 @@ export interface LaptopRow {
   brandId: number;
   model: string;
   releaseYear: number;
-  cpuTier: number;
+  cpuId: number;
+  cpuName: string;
+  cpuBenchmark: number;
+  gpuId: number | null;
+  gpuName: string | null;
+  gpuBenchmark: number;
   ramGb: number;
   storageGb: number;
   condition: number;
@@ -19,7 +24,8 @@ export interface LaptopRow {
 
 export function toSpecs(row: LaptopRow): LaptopSpecs {
   return {
-    cpuTier: row.cpuTier as CpuTier,
+    cpuBenchmark: row.cpuBenchmark,
+    gpuBenchmark: row.gpuBenchmark,
     ramGb: row.ramGb,
     storageGb: row.storageGb,
     condition: row.condition as Condition,
