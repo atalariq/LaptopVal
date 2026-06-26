@@ -73,6 +73,20 @@ docs/
   TASKS.md          # Phase checklist
 ```
 
+## Testing
+
+```bash
+bun run test        # unit tests (Vitest) — scoring engine, schemas, auth, queries
+bun run check       # type + Svelte checks
+
+# E2E (Playwright) — needs Postgres up and seeded (db:push + db:seed)
+bunx playwright install chromium   # one-time
+bun run test:e2e
+```
+
+E2E spins up the dev server itself and runs against the seeded database
+(public catalog/detail/evaluator flows, theme toggle, admin auth).
+
 ## Docs
 
 - [Product Requirements](docs/PRD.md)
