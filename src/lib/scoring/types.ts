@@ -1,9 +1,9 @@
-export type CpuTier = 1 | 2 | 3;
 export type Condition = 1 | 2 | 3 | 4;
 export type Verdict = "Great Deal" | "Fair" | "Overpriced" | "Avoid";
 
 export interface LaptopSpecs {
-  cpuTier: CpuTier;
+  cpuBenchmark: number; // PassMark CPU Mark
+  gpuBenchmark: number; // PassMark G3D Mark; 0 = integrated/none
   ramGb: number;
   storageGb: number;
   condition: Condition;
@@ -16,6 +16,7 @@ export interface LaptopSpecs {
 export interface FactorScore {
   factor:
     | "cpu"
+    | "gpu"
     | "ram"
     | "storage"
     | "condition"
@@ -41,7 +42,8 @@ export interface Band {
 }
 
 export interface ScoringConfig {
-  cpuPerTier: number; // points = cpuTier * cpuPerTier
+  cpu: Band[]; // points by cpuBenchmark
+  gpu: Band[]; // points by gpuBenchmark (0 benchmark -> 0 points)
   ram: Band[]; // by ramGb
   storage: Band[]; // by storageGb
   conditionPerLevel: number; // points = (condition - 1) * this

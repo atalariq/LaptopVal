@@ -1,7 +1,21 @@
 import type { ScoringConfig } from "./types";
 
 export const DEFAULT_SCORING_CONFIG: ScoringConfig = {
-  cpuPerTier: 10, // max 30
+  cpu: [
+    { min: 18000, points: 30 },
+    { min: 12000, points: 25 },
+    { min: 8000, points: 20 },
+    { min: 5000, points: 14 },
+    { min: 3000, points: 8 },
+    { min: 0, points: 4 },
+  ],
+  gpu: [
+    { min: 18000, points: 13 },
+    { min: 12000, points: 10 },
+    { min: 7000, points: 7 },
+    { min: 3000, points: 4 },
+    { min: 0, points: 0 },
+  ],
   ram: [
     { min: 32, points: 25 },
     { min: 16, points: 20 },
