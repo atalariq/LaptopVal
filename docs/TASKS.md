@@ -49,4 +49,4 @@
 ## Future
 
 - [ ] Public REST/JSON API for laptops + specs
-- [ ] Benchmark integration (pluggable CPU/GPU tier source)
+- [x] Benchmark integration — CPU/GPU scored from curated `cpus`/`gpus` datasets (admin-managed)

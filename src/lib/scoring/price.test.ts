@@ -4,7 +4,8 @@ import { DEFAULT_SCORING_CONFIG as C } from "./config";
 import type { LaptopSpecs } from "./types";
 
 const base: LaptopSpecs = {
-  cpuTier: 2,
+  cpuBenchmark: 9000,
+  gpuBenchmark: 0,
   ramGb: 16,
   storageGb: 512,
   condition: 3,

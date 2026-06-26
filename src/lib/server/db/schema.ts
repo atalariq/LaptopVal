@@ -37,6 +37,20 @@ export const brands = pgTable("brands", {
   notes: text("notes"),
 });
 
+export const cpus = pgTable("cpus", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  benchmark: integer("benchmark").notNull(), // PassMark CPU Mark
+  vendor: varchar("vendor", { length: 20 }).notNull(), // Intel | AMD | Apple
+});
+
+export const gpus = pgTable("gpus", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  benchmark: integer("benchmark").notNull(), // PassMark G3D Mark
+  kind: varchar("kind", { length: 20 }).notNull(), // integrated | discrete
+});
+
 export const laptops = pgTable("laptops", {
   id: serial("id").primaryKey(),
   brandId: integer("brand_id")
@@ -44,7 +58,10 @@ export const laptops = pgTable("laptops", {
     .references(() => brands.id),
   model: varchar("model", { length: 100 }).notNull(),
   releaseYear: smallint("release_year").notNull(),
-  cpuTier: smallint("cpu_tier").notNull(), // 1=low 2=mid 3=high
+  cpuId: integer("cpu_id")
+    .notNull()
+    .references(() => cpus.id),
+  gpuId: integer("gpu_id").references(() => gpus.id), // nullable: null = integrated/none
   ramGb: smallint("ram_gb").notNull(),
   storageGb: integer("storage_gb").notNull(),
   condition: smallint("condition").notNull(), // 1=buruk..4=mulus
@@ -64,7 +81,8 @@ export const useCases = pgTable("use_cases", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 50 }).notNull(),
   minRamGb: smallint("min_ram_gb").notNull(),
-  minCpuTier: smallint("min_cpu_tier").notNull(),
+  minCpuBenchmark: integer("min_cpu_benchmark").notNull(),
+  minGpuBenchmark: integer("min_gpu_benchmark").notNull().default(0),
   minStorage: integer("min_storage").notNull(),
 });
 

@@ -35,3 +35,31 @@ test.describe("admin auth", () => {
     await expect(page).toHaveURL(/\/login/);
   });
 });
+
+test.describe("admin cpu management", () => {
+  test("admin can add and remove a CPU", async ({ page }) => {
+    await page.goto("/login");
+    await page.getByLabel("Username").fill(ADMIN_USER);
+    await page.getByLabel("Password").fill(ADMIN_PASS);
+    await page.getByRole("button", { name: "Masuk" }).click();
+    await expect(page).toHaveURL(/\/admin$/);
+
+    await page.goto("/admin/cpus");
+    await page
+      .locator('form[action="?/create"] input[name="name"]')
+      .fill("Test CPU ZZ");
+    await page
+      .locator('form[action="?/create"] input[name="benchmark"]')
+      .fill("12345");
+    await page.getByRole("button", { name: "Tambah" }).click();
+    // Success flash confirms the row was created; name renders in an <input value>
+    await expect(page.getByText("CPU ditambahkan.")).toBeVisible();
+
+    page.on("dialog", (d) => d.accept());
+    const row = page.locator("tr").filter({
+      has: page.locator('input[name="name"][value="Test CPU ZZ"]'),
+    });
+    await row.getByRole("button", { name: "Hapus" }).click();
+    await expect(page.getByText("CPU dihapus.")).toBeVisible();
+  });
+});

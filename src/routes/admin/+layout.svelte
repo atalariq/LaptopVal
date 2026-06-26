@@ -5,6 +5,8 @@
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/laptops', label: 'Laptops' },
     { href: '/admin/brands', label: 'Brands' },
+    { href: '/admin/cpus', label: 'CPUs' },
+    { href: '/admin/gpus', label: 'GPUs' },
     { href: '/admin/use-cases', label: 'Use Cases' },
     { href: '/admin/scoring', label: 'Scoring' }
   ];

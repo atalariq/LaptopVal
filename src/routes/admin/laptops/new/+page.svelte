@@ -7,4 +7,4 @@
 <svelte:head><title>Tambah Laptop — Admin</title></svelte:head>
 <a href="/admin/laptops" class="text-sm text-muted hover:underline">← Kembali</a>
 <h1 class="mb-4 mt-1 text-2xl font-bold">Tambah Laptop</h1>
-<LaptopForm brands={data.brands} config={data.config} errors={form?.errors} submitLabel="Simpan" />
+<LaptopForm brands={data.brands} cpus={data.cpus} gpus={data.gpus} config={data.config} errors={form?.errors} submitLabel="Simpan" />

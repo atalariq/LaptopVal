@@ -2,7 +2,7 @@
   import type { ScoreResult } from '$lib/scoring';
   import type { LaptopRow } from '$lib/laptop';
   import VerdictBadge from './VerdictBadge.svelte';
-  import { formatPrice, regionLabel, cpuLabel } from '$lib/format';
+  import { formatPrice, regionLabel, gpuLabel } from '$lib/format';
   let { laptop, result }: { laptop: LaptopRow; result: ScoreResult } = $props();
 </script>
 
@@ -21,7 +21,8 @@
     <div class="mt-2 flex flex-wrap gap-1 text-xs text-muted">
       <span class="rounded bg-overlay px-1.5 py-0.5">{laptop.ramGb}GB RAM</span>
       <span class="rounded bg-overlay px-1.5 py-0.5">{laptop.storageGb}GB</span>
-      <span class="rounded bg-overlay px-1.5 py-0.5">CPU {cpuLabel(laptop.cpuTier)}</span>
+      <span class="rounded bg-overlay px-1.5 py-0.5">{laptop.cpuName}</span>
+      <span class="rounded bg-overlay px-1.5 py-0.5">{gpuLabel(laptop.gpuName)}</span>
       <span class="rounded bg-overlay px-1.5 py-0.5">{laptop.releaseYear}</span>
       <span class="rounded bg-overlay px-1.5 py-0.5">{regionLabel(laptop.location)}</span>
     </div>

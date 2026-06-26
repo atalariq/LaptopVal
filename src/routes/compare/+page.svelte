@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import VerdictBadge from '$lib/components/VerdictBadge.svelte';
-  import { formatPrice, regionLabel, cpuLabel, conditionLabel } from '$lib/format';
+  import { formatPrice, regionLabel, gpuLabel, conditionLabel } from '$lib/format';
   let { data }: { data: PageData } = $props();
 
   const best = $derived(
@@ -85,9 +85,15 @@
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-muted">CPU Tier</td>
+          <td class="py-2 text-muted">CPU</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{cpuLabel(laptop.cpuTier)}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{laptop.cpuName}</td>
+          {/each}
+        </tr>
+        <tr>
+          <td class="py-2 text-muted">GPU</td>
+          {#each data.items as { laptop, result } (laptop.id)}
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{gpuLabel(laptop.gpuName)}</td>
           {/each}
         </tr>
         <tr>

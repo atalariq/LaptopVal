@@ -22,6 +22,8 @@ export const actions: Actions = {
   default: async ({ request }) => {
     const f = await request.formData();
     const jsonFields = {
+      cpu: parseJson(f.get("cpu")),
+      gpu: parseJson(f.get("gpu")),
       ram: parseJson(f.get("ram")),
       storage: parseJson(f.get("storage")),
       agePenalty: parseJson(f.get("agePenalty")),
@@ -33,7 +35,8 @@ export const actions: Actions = {
       return fail(400, { error: "Ada field JSON yang tidak valid." });
     }
     const candidate = {
-      cpuPerTier: Number(f.get("cpuPerTier")),
+      cpu: jsonFields.cpu,
+      gpu: jsonFields.gpu,
       conditionPerLevel: Number(f.get("conditionPerLevel")),
       warrantyBonus: Number(f.get("warrantyBonus")),
       ram: jsonFields.ram,

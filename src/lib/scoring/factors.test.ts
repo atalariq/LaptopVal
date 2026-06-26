@@ -4,7 +4,8 @@ import { DEFAULT_SCORING_CONFIG as C } from "./config";
 import type { LaptopSpecs } from "./types";
 
 const base: LaptopSpecs = {
-  cpuTier: 2,
+  cpuBenchmark: 9000,
+  gpuBenchmark: 0,
   ramGb: 16,
   storageGb: 512,
   condition: 3,
@@ -16,8 +17,17 @@ const pts = (specs: LaptopSpecs) =>
   Object.fromEntries(scoreQuality(specs, C).map((f) => [f.factor, f.points]));
 
 describe("scoreQuality", () => {
-  it("scores cpu as tier * perTier", () => {
-    expect(pts({ ...base, cpuTier: 3 }).cpu).toBe(30);
+  it("scores cpu by benchmark band", () => {
+    expect(pts({ ...base, cpuBenchmark: 20000 }).cpu).toBe(30);
+    expect(pts({ ...base, cpuBenchmark: 12000 }).cpu).toBe(25);
+    expect(pts({ ...base, cpuBenchmark: 8000 }).cpu).toBe(20);
+    expect(pts({ ...base, cpuBenchmark: 1000 }).cpu).toBe(4);
+  });
+  it("scores gpu by benchmark band; 0 = no points", () => {
+    expect(pts({ ...base, gpuBenchmark: 0 }).gpu).toBe(0);
+    expect(pts({ ...base, gpuBenchmark: 5000 }).gpu).toBe(4);
+    expect(pts({ ...base, gpuBenchmark: 13000 }).gpu).toBe(10);
+    expect(pts({ ...base, gpuBenchmark: 25000 }).gpu).toBe(13);
   });
   it("picks the highest matching ram band", () => {
     expect(pts({ ...base, ramGb: 32 }).ram).toBe(25);

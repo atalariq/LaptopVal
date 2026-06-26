@@ -14,7 +14,8 @@ describe("verdictFor", () => {
 
 describe("score", () => {
   const good: LaptopSpecs = {
-    cpuTier: 3,
+    cpuBenchmark: 20000,
+    gpuBenchmark: 14000,
     ramGb: 32,
     storageGb: 1000,
     condition: 4,
@@ -24,11 +25,11 @@ describe("score", () => {
     location: "jawa_barat",
   };
 
-  it("clamps total into 0..100 and returns all 7 factors", () => {
+  it("clamps total into 0..100 and returns all 8 factors", () => {
     const r = score(good, C);
     expect(r.total).toBeGreaterThanOrEqual(0);
     expect(r.total).toBeLessThanOrEqual(100);
-    expect(r.breakdown).toHaveLength(7);
+    expect(r.breakdown).toHaveLength(8);
     expect(r.breakdown.map((f) => f.factor)).toContain("price");
   });
 
@@ -38,7 +39,8 @@ describe("score", () => {
 
   it("an overpriced weak laptop scores low", () => {
     const bad: LaptopSpecs = {
-      cpuTier: 1,
+      cpuBenchmark: 2500,
+      gpuBenchmark: 0,
       ramGb: 4,
       storageGb: 128,
       condition: 1,

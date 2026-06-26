@@ -13,14 +13,15 @@
 {#if form?.error}<p class="mb-3 rounded bg-error/15 p-2 text-sm text-error">{form.error}</p>{/if}
 
 <form method="POST" class="space-y-4">
-  <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-    <label class="text-sm">CPU / tier<input type="number" name="cpuPerTier" value={c.cpuPerTier} class="mt-1 block w-full rounded border border-overlay px-2 py-1" /></label>
+  <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
     <label class="text-sm">Kondisi / level<input type="number" name="conditionPerLevel" value={c.conditionPerLevel} class="mt-1 block w-full rounded border border-overlay px-2 py-1" /></label>
     <label class="text-sm">Bonus garansi<input type="number" name="warrantyBonus" value={c.warrantyBonus} class="mt-1 block w-full rounded border border-overlay px-2 py-1" /></label>
     <label class="text-sm">IDR / poin kualitas<input type="number" name="idrPerQualityPoint" value={c.price.idrPerQualityPoint} class="mt-1 block w-full rounded border border-overlay px-2 py-1" /></label>
   </div>
 
   <div class="grid gap-3 md:grid-cols-2">
+    <label class="text-sm">CPU bands (JSON)<textarea name="cpu" rows="5" class="mt-1 block w-full rounded border border-overlay px-2 py-1 font-mono text-xs">{j(c.cpu)}</textarea></label>
+    <label class="text-sm">GPU bands (JSON)<textarea name="gpu" rows="5" class="mt-1 block w-full rounded border border-overlay px-2 py-1 font-mono text-xs">{j(c.gpu)}</textarea></label>
     <label class="text-sm">RAM bands (JSON)<textarea name="ram" rows="5" class="mt-1 block w-full rounded border border-overlay px-2 py-1 font-mono text-xs">{j(c.ram)}</textarea></label>
     <label class="text-sm">Storage bands (JSON)<textarea name="storage" rows="5" class="mt-1 block w-full rounded border border-overlay px-2 py-1 font-mono text-xs">{j(c.storage)}</textarea></label>
     <label class="text-sm">Age penalty (JSON)<textarea name="agePenalty" rows="4" class="mt-1 block w-full rounded border border-overlay px-2 py-1 font-mono text-xs">{j(c.agePenalty)}</textarea></label>

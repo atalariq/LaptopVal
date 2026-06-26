@@ -1,6 +1,13 @@
 import { and, eq, ilike, inArray, or, gte, sql } from "drizzle-orm";
 import { db } from "./db";
-import { laptops, brands, useCases, scoringConfig } from "./db/schema";
+import {
+  laptops,
+  brands,
+  cpus,
+  gpus,
+  useCases,
+  scoringConfig,
+} from "./db/schema";
 import { DEFAULT_SCORING_CONFIG, type ScoringConfig } from "$lib/scoring";
 import type { LaptopRow } from "$lib/laptop";
 
@@ -19,7 +26,12 @@ const SELECT = {
   brandId: laptops.brandId,
   model: laptops.model,
   releaseYear: laptops.releaseYear,
-  cpuTier: laptops.cpuTier,
+  cpuId: laptops.cpuId,
+  cpuName: cpus.name,
+  cpuBenchmark: cpus.benchmark,
+  gpuId: laptops.gpuId,
+  gpuName: gpus.name,
+  gpuBenchmark: sql<number>`coalesce(${gpus.benchmark}, 0)`,
   ramGb: laptops.ramGb,
   storageGb: laptops.storageGb,
   condition: laptops.condition,
@@ -54,7 +66,10 @@ export async function listLaptops(opts: ListOpts = {}): Promise<LaptopRow[]> {
       .limit(1);
     if (uc) {
       conds.push(gte(laptops.ramGb, uc.minRamGb));
-      conds.push(gte(laptops.cpuTier, uc.minCpuTier));
+      conds.push(gte(cpus.benchmark, uc.minCpuBenchmark));
+      conds.push(
+        gte(sql<number>`coalesce(${gpus.benchmark}, 0)`, uc.minGpuBenchmark),
+      );
       conds.push(gte(laptops.storageGb, uc.minStorage));
     }
   }
@@ -62,6 +77,8 @@ export async function listLaptops(opts: ListOpts = {}): Promise<LaptopRow[]> {
     .select(SELECT)
     .from(laptops)
     .innerJoin(brands, eq(laptops.brandId, brands.id))
+    .innerJoin(cpus, eq(laptops.cpuId, cpus.id))
+    .leftJoin(gpus, eq(laptops.gpuId, gpus.id))
     .where(conds.length ? and(...conds) : undefined) as Promise<LaptopRow[]>;
 }
 
@@ -70,6 +87,8 @@ export async function getLaptopById(id: number): Promise<LaptopRow | null> {
     .select(SELECT)
     .from(laptops)
     .innerJoin(brands, eq(laptops.brandId, brands.id))
+    .innerJoin(cpus, eq(laptops.cpuId, cpus.id))
+    .leftJoin(gpus, eq(laptops.gpuId, gpus.id))
     .where(eq(laptops.id, id))
     .limit(1);
   return (row as LaptopRow) ?? null;
@@ -81,6 +100,8 @@ export async function getLaptopsByIds(ids: number[]): Promise<LaptopRow[]> {
     .select(SELECT)
     .from(laptops)
     .innerJoin(brands, eq(laptops.brandId, brands.id))
+    .innerJoin(cpus, eq(laptops.cpuId, cpus.id))
+    .leftJoin(gpus, eq(laptops.gpuId, gpus.id))
     .where(inArray(laptops.id, ids)) as Promise<LaptopRow[]>;
 }
 
@@ -91,6 +112,25 @@ export function getUseCases() {
 export function getBrands() {
   return db.select().from(brands).orderBy(brands.name);
 }
+
+export function getCpus() {
+  return db.select().from(cpus).orderBy(cpus.name);
+}
+export function getGpus() {
+  return db.select().from(gpus).orderBy(gpus.name);
+}
+
+type CpuInput = { name: string; benchmark: number; vendor: string };
+export const createCpu = (d: CpuInput) => db.insert(cpus).values(d);
+export const updateCpu = (id: number, d: CpuInput) =>
+  db.update(cpus).set(d).where(eq(cpus.id, id));
+export const deleteCpu = (id: number) => db.delete(cpus).where(eq(cpus.id, id));
+
+type GpuInput = { name: string; benchmark: number; kind: string };
+export const createGpu = (d: GpuInput) => db.insert(gpus).values(d);
+export const updateGpu = (id: number, d: GpuInput) =>
+  db.update(gpus).set(d).where(eq(gpus.id, id));
+export const deleteGpu = (id: number) => db.delete(gpus).where(eq(gpus.id, id));
 
 export async function priceRangeForModel(model: string, brandId: number) {
   const [r] = await db
@@ -124,7 +164,8 @@ export const deleteBrand = (id: number) =>
 type UseCaseInput = {
   name: string;
   minRamGb: number;
-  minCpuTier: number;
+  minCpuBenchmark: number;
+  minGpuBenchmark: number;
   minStorage: number;
 };
 export const createUseCase = (d: UseCaseInput) => db.insert(useCases).values(d);
@@ -137,7 +178,8 @@ type LaptopInput = {
   brandId: number;
   model: string;
   releaseYear: number;
-  cpuTier: number;
+  cpuId: number;
+  gpuId?: number | null;
   ramGb: number;
   storageGb: number;
   condition: number;
@@ -150,11 +192,18 @@ type LaptopInput = {
 // location is `string` in LaptopInput because format.ts (client-accessible) can't import
 // the server-only pgEnum type. Zod validates the value via REGION_KEYS before reaching here.
 export const createLaptop = (d: LaptopInput) =>
-  db.insert(laptops).values({ ...d, location: d.location as never });
+  db
+    .insert(laptops)
+    .values({ ...d, gpuId: d.gpuId ?? null, location: d.location as never });
 export const updateLaptop = (id: number, d: LaptopInput) =>
   db
     .update(laptops)
-    .set({ ...d, location: d.location as never, updatedAt: new Date() })
+    .set({
+      ...d,
+      gpuId: d.gpuId ?? null,
+      location: d.location as never,
+      updatedAt: new Date(),
+    })
     .where(eq(laptops.id, id));
 export const deleteLaptop = (id: number) =>
   db.delete(laptops).where(eq(laptops.id, id));
