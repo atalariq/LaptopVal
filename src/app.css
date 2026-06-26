@@ -1,8 +1,29 @@
 @import "tailwindcss";
+@import "./wana.css";
+
+/* Bridge Wana semantic tokens into Tailwind's theme so utilities resolve to
+   them: bg-bg, bg-surface, text-text, text-muted, text-accent, border-overlay,
+   text-success/warning/error/info, plus opacity modifiers (bg-accent/10, …).
+   Values reference the Wana CSS vars, which flip per theme — so a single set of
+   semantic utilities covers light and dark with no dark: variants. */
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-overlay: var(--overlay);
+  --color-muted: var(--muted);
+  --color-text: var(--text);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+}
 
 :root {
   color-scheme: light dark;
 }
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-bg text-text antialiased;
+  font-family: var(--font-sans);
 }

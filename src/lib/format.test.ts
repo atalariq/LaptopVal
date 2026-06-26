@@ -23,9 +23,11 @@ describe("regionLabel", () => {
   });
 });
 describe("verdictColor", () => {
-  it("maps each verdict to a tailwind class group", () => {
-    expect(verdictColor("Great Deal")).toContain("green");
-    expect(verdictColor("Avoid")).toContain("red");
+  it("maps each verdict to a semantic token class group", () => {
+    expect(verdictColor("Great Deal")).toContain("success");
+    expect(verdictColor("Fair")).toContain("info");
+    expect(verdictColor("Overpriced")).toContain("warning");
+    expect(verdictColor("Avoid")).toContain("error");
   });
 });
 describe("labels", () => {

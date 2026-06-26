@@ -85,13 +85,13 @@
 
 <div class="mb-4 flex items-center justify-between">
   <div>
-    <a href="/" class="text-sm text-slate-500 hover:underline">← Katalog</a>
+    <a href="/" class="text-sm text-muted hover:underline">← Katalog</a>
     <h1 class="mt-1 text-2xl font-bold">Tier List Laptop</h1>
-    <p class="text-sm text-slate-500">Drag & drop laptop antar tier. S = terbaik, D = hindari.</p>
+    <p class="text-sm text-muted">Drag & drop laptop antar tier. S = terbaik, D = hindari.</p>
   </div>
   <div class="flex gap-2">
-    <a href="/tier-list" class="rounded border px-3 py-1.5 text-sm hover:bg-slate-100">Reset</a>
-    <button onclick={copyUrl} class="rounded bg-slate-900 px-3 py-1.5 text-sm font-medium text-white">
+    <a href="/tier-list" class="rounded border border-overlay px-3 py-1.5 text-sm hover:bg-overlay">Reset</a>
+    <button onclick={copyUrl} class="rounded bg-accent px-3 py-1.5 text-sm font-medium text-bg">
       {copied ? 'Tersalin!' : 'Salin URL'}
     </button>
   </div>
@@ -106,7 +106,7 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="flex min-h-20 flex-1 flex-wrap gap-2 rounded border border-dashed p-2 transition
-          {dragging ? 'border-sky-400 bg-sky-50' : 'border-slate-300'}"
+          {dragging ? 'border-accent bg-accent/10' : 'border-overlay'}"
         ondragover={onDragOver}
         ondrop={(e) => onDrop(e, tier)}
       >
@@ -114,20 +114,20 @@
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <div
             draggable="true"
-            class="cursor-grab rounded border bg-white p-2 text-xs shadow-sm select-none active:cursor-grabbing"
+            class="cursor-grab rounded border border-overlay bg-surface p-2 text-xs shadow-sm select-none active:cursor-grabbing"
             ondragstart={(e) => onDragStart(e, laptop.id, tier)}
             ondragend={onDragEnd}
           >
             <div class="font-semibold">{laptop.brand} {laptop.model}</div>
-            <div class="text-slate-500">{formatPrice(laptop.price)}</div>
+            <div class="text-muted">{formatPrice(laptop.price)}</div>
             <div class="mt-1 flex items-center gap-1">
-              <span class="text-slate-700">Skor {result.total}</span>
+              <span class="text-text">Skor {result.total}</span>
               <VerdictBadge verdict={result.verdict} />
             </div>
           </div>
         {/each}
         {#if getEntries(tier).length === 0}
-          <p class="self-center text-xs text-slate-400">Drop laptop ke sini</p>
+          <p class="self-center text-xs text-muted">Drop laptop ke sini</p>
         {/if}
       </div>
     </div>

@@ -20,13 +20,13 @@
 
 <div class="mb-4 flex items-center justify-between">
   <div>
-    <a href="/" class="text-sm text-slate-500 hover:underline">← Katalog</a>
+    <a href="/" class="text-sm text-muted hover:underline">← Katalog</a>
     <h1 class="mt-1 text-2xl font-bold">Bandingkan Laptop</h1>
   </div>
   {#if data.addable.length > 0 && data.ids.length < 4}
     <div class="flex items-center gap-2 text-sm">
       <select
-        class="rounded border px-2 py-1"
+        class="rounded border border-overlay px-2 py-1"
         onchange={(e) => {
           const v = (e.currentTarget as HTMLSelectElement).value;
           if (v) window.location.href = `/compare?ids=${[...data.ids, Number(v)].join(',')}`;
@@ -42,99 +42,99 @@
 </div>
 
 {#if data.items.length === 0}
-  <div class="rounded-lg border bg-white p-8 text-center">
-    <p class="text-slate-500">Belum ada laptop dipilih untuk dibandingkan.</p>
-    <a href="/" class="mt-3 inline-block text-sm text-sky-600 hover:underline">Pilih dari katalog →</a>
+  <div class="rounded-lg border border-overlay bg-surface p-8 text-center">
+    <p class="text-muted">Belum ada laptop dipilih untuk dibandingkan.</p>
+    <a href="/" class="mt-3 inline-block text-sm text-accent hover:underline">Pilih dari katalog →</a>
   </div>
 {:else}
   <div class="overflow-x-auto">
     <table class="w-full text-sm">
       <thead>
         <tr>
-          <th class="w-32 py-2 text-left text-slate-500">Spesifikasi</th>
+          <th class="w-32 py-2 text-left text-muted">Spesifikasi</th>
           {#each data.items as { laptop, result } (laptop.id)}
-            <th class="px-3 py-2 text-left {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">
+            <th class="px-3 py-2 text-left {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">
               <div class="font-semibold">{laptop.brand} {laptop.model}</div>
               <div class="text-lg font-bold">{formatPrice(laptop.price)}</div>
-              <a href={removeUrl(laptop.id)} class="text-xs text-red-500 hover:underline">Hapus</a>
+              <a href={removeUrl(laptop.id)} class="text-xs text-error hover:underline">Hapus</a>
             </th>
           {/each}
         </tr>
       </thead>
       <tbody class="divide-y">
-        <tr class="bg-slate-50 font-semibold">
-          <td class="py-2 text-slate-500">Skor</td>
+        <tr class="bg-bg font-semibold">
+          <td class="py-2 text-muted">Skor</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">
-              <span class="text-2xl">{result.total}</span><span class="text-slate-400">/100</span>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">
+              <span class="text-2xl">{result.total}</span><span class="text-muted">/100</span>
             </td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Verdict</td>
+          <td class="py-2 text-muted">Verdict</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">
               <VerdictBadge verdict={result.verdict} />
             </td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Harga wajar</td>
+          <td class="py-2 text-muted">Harga wajar</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{formatPrice(result.fairPrice)}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{formatPrice(result.fairPrice)}</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">CPU Tier</td>
+          <td class="py-2 text-muted">CPU Tier</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{cpuLabel(laptop.cpuTier)}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{cpuLabel(laptop.cpuTier)}</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">RAM</td>
+          <td class="py-2 text-muted">RAM</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{laptop.ramGb} GB</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{laptop.ramGb} GB</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Storage</td>
+          <td class="py-2 text-muted">Storage</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{laptop.storageGb} GB</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{laptop.storageGb} GB</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Kondisi</td>
+          <td class="py-2 text-muted">Kondisi</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{conditionLabel(laptop.condition)}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{conditionLabel(laptop.condition)}</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Garansi</td>
+          <td class="py-2 text-muted">Garansi</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{laptop.hasWarranty ? 'Ya' : 'Tidak'}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{laptop.hasWarranty ? 'Ya' : 'Tidak'}</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Tahun</td>
+          <td class="py-2 text-muted">Tahun</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{laptop.releaseYear}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{laptop.releaseYear}</td>
           {/each}
         </tr>
         <tr>
-          <td class="py-2 text-slate-500">Lokasi</td>
+          <td class="py-2 text-muted">Lokasi</td>
           {#each data.items as { laptop, result } (laptop.id)}
-            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">{regionLabel(laptop.location)}</td>
+            <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">{regionLabel(laptop.location)}</td>
           {/each}
         </tr>
-        <tr class="bg-slate-50">
-          <td class="py-2 font-semibold text-slate-500" colspan={1 + data.items.length}>Per-faktor</td>
+        <tr class="bg-bg">
+          <td class="py-2 font-semibold text-muted" colspan={1 + data.items.length}>Per-faktor</td>
         </tr>
         {#each (data.items[0]?.result.breakdown ?? []) as factor, i (factor.label)}
           <tr>
-            <td class="py-2 text-slate-500">{factor.label}</td>
+            <td class="py-2 text-muted">{factor.label}</td>
             {#each data.items as { laptop, result } (laptop.id)}
-              <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-green-50' : ''}">
-                {result.breakdown.find(f => f.label === factor.label)?.points ?? 0}{#if factor.max > 0}<span class="text-slate-400">/{factor.max}</span>{/if}
+              <td class="px-3 py-2 {best?.laptop.id === laptop.id ? 'bg-success/10' : ''}">
+                {result.breakdown.find(f => f.label === factor.label)?.points ?? 0}{#if factor.max > 0}<span class="text-muted">/{factor.max}</span>{/if}
               </td>
             {/each}
           </tr>

@@ -23,13 +23,13 @@ export const REGION_KEYS = Object.keys(REGIONS);
 export function verdictColor(verdict: Verdict): string {
   switch (verdict) {
     case "Great Deal":
-      return "bg-green-100 text-green-800 border-green-300";
+      return "bg-success/15 text-success border-success/30";
     case "Fair":
-      return "bg-sky-100 text-sky-800 border-sky-300";
+      return "bg-info/15 text-info border-info/30";
     case "Overpriced":
-      return "bg-amber-100 text-amber-800 border-amber-300";
+      return "bg-warning/15 text-warning border-warning/30";
     case "Avoid":
-      return "bg-red-100 text-red-800 border-red-300";
+      return "bg-error/15 text-error border-error/30";
   }
 }
 
