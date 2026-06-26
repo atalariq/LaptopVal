@@ -83,6 +83,30 @@ describe("laptopSchema", () => {
       false,
     );
   });
+  it("accepts an http(s) sourceUrl", () => {
+    const r = laptopSchema.parse({
+      ...validLaptop,
+      sourceUrl: "https://example.com/listing",
+    });
+    expect(r.sourceUrl).toBe("https://example.com/listing");
+  });
+  it("rejects a javascript: sourceUrl (XSS via href)", () => {
+    expect(
+      laptopSchema.safeParse({
+        ...validLaptop,
+        // eslint-disable-next-line no-script-url
+        sourceUrl: "javascript:alert(1)",
+      }).success,
+    ).toBe(false);
+  });
+  it("rejects a non-http imagePath", () => {
+    expect(
+      laptopSchema.safeParse({
+        ...validLaptop,
+        imagePath: "data:text/html,<script>alert(1)</script>",
+      }).success,
+    ).toBe(false);
+  });
 });
 
 describe("parseWith", () => {

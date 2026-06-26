@@ -39,6 +39,15 @@ const optionalText = (max: number) =>
     .or(z.literal(""))
     .transform((v) => v || null);
 
+// Same as optionalText but rejects anything that isn't an http(s) URL.
+// Stored values are rendered into href/src attributes, where Svelte does NOT
+// strip dangerous protocols — a `javascript:` URL would execute on click.
+const optionalUrl = (max: number) =>
+  optionalText(max).refine(
+    (v) => v === null || /^https?:\/\//i.test(v),
+    "URL harus diawali http:// atau https://",
+  );
+
 export const brandSchema = z.object({
   name: z.string().trim().min(1, "Nama wajib diisi").max(50),
   notes: optionalText(1000),
@@ -64,8 +73,8 @@ export const laptopSchema = z.object({
   location: z
     .string()
     .refine((v) => REGION_KEYS.includes(v), "Lokasi tidak valid"),
-  imagePath: optionalText(255),
-  sourceUrl: optionalText(255),
+  imagePath: optionalUrl(255),
+  sourceUrl: optionalUrl(255),
 });
 
 const band = z.object({ min: z.number(), points: z.number() });
