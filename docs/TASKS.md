@@ -21,24 +21,30 @@
 
 ## Phase 2: Public
 
-- [ ] Catalog page (`/`) — listing, use-case filter, location filter, search, sort
-- [ ] Detail page (`/laptops/[id]`) — specs, per-factor breakdown, model price range
-- [ ] Self-service evaluator (`/evaluate`) — spec input form, live verdict + breakdown
+- [x] Catalog page (`/`) — listing, use-case filter, location filter, search, sort
+- [x] Detail page (`/laptops/[id]`) — specs, per-factor breakdown, model price range
+- [x] Self-service evaluator (`/evaluate`) — spec input form, live verdict + breakdown
 
 ## Phase 3: Admin
 
-- [ ] Auth (`/login`, `/logout`, session middleware)
-- [ ] Admin dashboard (`/admin`) — totals, avg score per brand, top deals
-- [ ] Laptop CRUD (`/admin/laptops`) — list, create/edit form with live score preview
-- [ ] Brand management (`/admin/brands`)
-- [ ] Use-case management (`/admin/use-cases`)
-- [ ] Scoring config editor (`/admin/scoring`) — weights, thresholds, verdict bands
+- [x] Auth (`/login`, `/logout`, session middleware)
+- [x] Admin dashboard (`/admin`) — totals, avg score per brand, top deals
+- [x] Laptop CRUD (`/admin/laptops`) — list, create/edit form with live score preview
+- [x] Brand management (`/admin/brands`)
+- [x] Use-case management (`/admin/use-cases`)
+- [x] Scoring config editor (`/admin/scoring`) — weights, thresholds, verdict bands
 
 ## Phase 4: Features
 
-- [ ] Compare (`/compare`) — side-by-side specs/scores/breakdown for 2–4 laptops, shareable URL
-- [ ] Location filter + model price range on detail page
-- [ ] Tier list maker (`/tier-list`) — drag-drop S/A/B/C/D, shareable URL state
+- [x] Compare (`/compare`) — side-by-side specs/scores/breakdown for 2–4 laptops, shareable URL
+- [x] Location filter + model price range on detail page
+- [x] Tier list maker (`/tier-list`) — drag-drop S/A/B/C/D, shareable URL state
+
+## Phase 5: Polish
+
+- [ ] Design system integration (Wana tokens via Tailwind `@theme`, light/dark)
+- [ ] E2E tests (Playwright) — public flows + admin auth
+- [ ] Resolve `state_referenced_locally` warnings in `LaptopForm`, `scoring`, `tier-list`
 
 ## Future
 
