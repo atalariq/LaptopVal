@@ -7,7 +7,12 @@ const row: LaptopRow = {
   brandId: 2,
   model: "T480",
   releaseYear: 2019,
-  cpuTier: 2,
+  cpuId: 1,
+  cpuName: "Intel Core i5-8250U",
+  cpuBenchmark: 7200,
+  gpuId: null,
+  gpuName: null,
+  gpuBenchmark: 0,
   ramGb: 16,
   storageGb: 512,
   condition: 3,
@@ -21,7 +26,8 @@ const row: LaptopRow = {
 describe("toSpecs", () => {
   it("extracts the engine spec fields including location", () => {
     expect(toSpecs(row)).toEqual({
-      cpuTier: 2,
+      cpuBenchmark: 7200,
+      gpuBenchmark: 0,
       ramGb: 16,
       storageGb: 512,
       condition: 3,

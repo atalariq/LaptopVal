@@ -33,10 +33,8 @@ export function verdictColor(verdict: Verdict): string {
   }
 }
 
-export function cpuLabel(t: number): string {
-  return (
-    ({ 1: "Low", 2: "Mid", 3: "High" } as Record<number, string>)[t] ?? "-"
-  );
+export function gpuLabel(name: string | null): string {
+  return name ?? "Integrated";
 }
 export function conditionLabel(c: number): string {
   return (

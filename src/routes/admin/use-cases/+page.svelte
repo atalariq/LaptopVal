@@ -11,14 +11,15 @@
 <form method="POST" action="?/create" class="mb-6 flex flex-wrap items-end gap-2">
   <label class="text-sm">Nama<input name="name" required class="mt-1 block w-32 rounded border border-overlay px-2 py-1" /></label>
   <label class="text-sm">Min RAM<input type="number" name="minRamGb" value="8" class="mt-1 block w-24 rounded border border-overlay px-2 py-1" /></label>
-  <label class="text-sm">Min CPU<input type="number" name="minCpuTier" value="1" min="1" max="3" class="mt-1 block w-20 rounded border border-overlay px-2 py-1" /></label>
+  <label class="text-sm">Min CPU Bench<input type="number" name="minCpuBenchmark" value="0" min="0" class="mt-1 block w-24 rounded border border-overlay px-2 py-1" /></label>
+  <label class="text-sm">Min GPU Bench<input type="number" name="minGpuBenchmark" value="0" min="0" class="mt-1 block w-24 rounded border border-overlay px-2 py-1" /></label>
   <label class="text-sm">Min Storage<input type="number" name="minStorage" value="256" class="mt-1 block w-24 rounded border border-overlay px-2 py-1" /></label>
   <button class="rounded bg-accent px-3 py-1.5 text-sm font-medium text-bg">Tambah</button>
   {#if form?.action === 'create' && form?.errors}<span class="text-sm text-error">{Object.values(form.errors).join(', ')}</span>{/if}
 </form>
 
 <table class="w-full text-sm">
-  <thead><tr class="text-left text-muted"><th class="py-1">Nama</th><th>Min RAM</th><th>Min CPU</th><th>Min Storage</th><th></th></tr></thead>
+  <thead><tr class="text-left text-muted"><th class="py-1">Nama</th><th>Min RAM</th><th>Min CPU Bench</th><th>Min GPU Bench</th><th>Min Storage</th><th></th></tr></thead>
   <tbody class="divide-y">
     {#each data.useCases as u (u.id)}
       <tr>
@@ -27,7 +28,8 @@
             <input type="hidden" name="id" value={u.id} />
             <input name="name" value={u.name} class="w-32 rounded border border-overlay px-2 py-1" />
             <input type="number" name="minRamGb" value={u.minRamGb} class="w-20 rounded border border-overlay px-2 py-1" />
-            <input type="number" name="minCpuTier" value={u.minCpuTier} min="1" max="3" class="w-16 rounded border border-overlay px-2 py-1" />
+            <input type="number" name="minCpuBenchmark" value={u.minCpuBenchmark} min="0" class="w-24 rounded border border-overlay px-2 py-1" />
+            <input type="number" name="minGpuBenchmark" value={u.minGpuBenchmark} min="0" class="w-24 rounded border border-overlay px-2 py-1" />
             <input type="number" name="minStorage" value={u.minStorage} class="w-24 rounded border border-overlay px-2 py-1" />
             <button class="rounded border border-overlay px-2 py-1 hover:bg-overlay">Simpan</button>
           </form>

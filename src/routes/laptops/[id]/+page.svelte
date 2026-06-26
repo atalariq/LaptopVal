@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import ScoreBreakdown from '$lib/components/ScoreBreakdown.svelte';
-  import { formatPrice, regionLabel, cpuLabel, conditionLabel } from '$lib/format';
+  import { formatPrice, regionLabel, gpuLabel, conditionLabel } from '$lib/format';
   let { data }: { data: PageData } = $props();
   const l = $derived(data.laptop);
 </script>
@@ -23,7 +23,8 @@
     {/if}
     <table class="mt-4 w-full text-sm">
       <tbody class="divide-y">
-        <tr><td class="py-1.5 text-muted">CPU</td><td class="text-right">{cpuLabel(l.cpuTier)}</td></tr>
+        <tr><td class="py-1.5 text-muted">CPU</td><td class="text-right">{l.cpuName} ({l.cpuBenchmark})</td></tr>
+        <tr><td class="py-1.5 text-muted">GPU</td><td class="text-right">{l.gpuName ? l.gpuName + ' (' + l.gpuBenchmark + ')' : 'Integrated'}</td></tr>
         <tr><td class="py-1.5 text-muted">RAM</td><td class="text-right">{l.ramGb} GB</td></tr>
         <tr><td class="py-1.5 text-muted">Storage</td><td class="text-right">{l.storageGb} GB</td></tr>
         <tr><td class="py-1.5 text-muted">Kondisi</td><td class="text-right">{conditionLabel(l.condition)}</td></tr>

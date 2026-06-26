@@ -3,7 +3,6 @@ import {
   formatPrice,
   regionLabel,
   verdictColor,
-  cpuLabel,
   conditionLabel,
 } from "./format";
 
@@ -31,8 +30,7 @@ describe("verdictColor", () => {
   });
 });
 describe("labels", () => {
-  it("maps cpu tier and condition", () => {
-    expect(cpuLabel(3)).toBe("High");
+  it("maps condition number to label", () => {
     expect(conditionLabel(4)).toBe("Mulus");
   });
 });
