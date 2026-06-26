@@ -6,7 +6,7 @@
   let { form, data }: { form: ActionData; data: PageData } = $props();
 
   let specs = $state<LaptopSpecs>({
-    cpuTier: 2, ramGb: 8, storageGb: 256, condition: 3,
+    cpuBenchmark: 9000, gpuBenchmark: 0, ramGb: 8, storageGb: 256, condition: 3,
     hasWarranty: false, releaseYear: 2020, price: 4000, location: ''
   });
   // Use the DB active config (from load) so the live preview matches the server result.
@@ -20,9 +20,15 @@
 
 <div class="mt-4 grid gap-6 md:grid-cols-2">
   <form method="POST" class="space-y-3">
-    <label class="block text-sm">CPU tier
-      <select name="cpuTier" bind:value={specs.cpuTier} class="mt-1 block w-full rounded border border-overlay px-2 py-1">
-        <option value={1}>Low</option><option value={2}>Mid</option><option value={3}>High</option>
+    <label class="block text-sm">CPU
+      <select name="cpuBenchmark" bind:value={specs.cpuBenchmark} class="mt-1 block w-full rounded border border-overlay px-2 py-1">
+        {#each data.cpus as c}<option value={c.benchmark}>{c.name}</option>{/each}
+      </select>
+    </label>
+    <label class="block text-sm">GPU
+      <select name="gpuBenchmark" bind:value={specs.gpuBenchmark} class="mt-1 block w-full rounded border border-overlay px-2 py-1">
+        <option value={0}>— Integrated / none —</option>
+        {#each data.gpus as g}<option value={g.benchmark}>{g.name}</option>{/each}
       </select>
     </label>
     <label class="block text-sm">RAM (GB)
