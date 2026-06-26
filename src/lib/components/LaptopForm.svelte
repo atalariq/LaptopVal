@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import type { ScoringConfig, LaptopSpecs } from '$lib/scoring';
   import { score } from '$lib/scoring';
   import ScoreBreakdown from './ScoreBreakdown.svelte';
@@ -16,14 +17,16 @@
     initial?: Partial<Vals>; errors?: Record<string, string>; submitLabel: string;
   } = $props();
 
-  let v = $state<Vals>({
+  // Seed the editable form once from props; later prop changes must not clobber
+  // user edits, so snapshot the initial values with untrack.
+  let v = $state<Vals>(untrack(() => ({
     brandId: initial?.brandId ?? brands[0]?.id ?? 0,
     model: initial?.model ?? '', releaseYear: initial?.releaseYear ?? 2020,
     cpuTier: initial?.cpuTier ?? 2, ramGb: initial?.ramGb ?? 8, storageGb: initial?.storageGb ?? 256,
     condition: initial?.condition ?? 3, hasWarranty: initial?.hasWarranty ?? false,
     price: initial?.price ?? 4000, location: initial?.location ?? REGION_KEYS[0],
     imagePath: initial?.imagePath ?? '', sourceUrl: initial?.sourceUrl ?? ''
-  });
+  })));
 
   const specs = $derived<LaptopSpecs>({
     cpuTier: v.cpuTier as LaptopSpecs['cpuTier'], ramGb: v.ramGb, storageGb: v.storageGb,

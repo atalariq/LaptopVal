@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import type { PageData } from './$types';
   import type { LaptopRow } from '$lib/laptop';
   import type { ScoreResult } from '$lib/scoring/types';
@@ -19,19 +20,19 @@
 
   type Entry = { laptop: LaptopRow; result: ScoreResult };
 
-  const entries = data.entries;
-  const entryMap = new Map<number, Entry>(
-    entries.map((e) => [e.laptop.id, e as Entry])
+  const entryMap = $derived(
+    new Map<number, Entry>(data.entries.map((e) => [e.laptop.id, e as Entry]))
   );
 
-  const initialTiers = data.tiers;
-  let tiers = $state<Record<TierKey, number[]>>({
-    s: [...(initialTiers.s ?? [])],
-    a: [...(initialTiers.a ?? [])],
-    b: [...(initialTiers.b ?? [])],
-    c: [...(initialTiers.c ?? [])],
-    d: [...(initialTiers.d ?? [])],
-  });
+  // Snapshot the initial tier assignment once; the board is mutated locally and
+  // synced to the URL, so it must not reset when `data` changes.
+  let tiers = $state<Record<TierKey, number[]>>(untrack(() => ({
+    s: [...(data.tiers.s ?? [])],
+    a: [...(data.tiers.a ?? [])],
+    b: [...(data.tiers.b ?? [])],
+    c: [...(data.tiers.c ?? [])],
+    d: [...(data.tiers.d ?? [])],
+  })));
   let dragging = $state<{ id: number; fromTier: TierKey } | null>(null);
   let copied = $state(false);
 

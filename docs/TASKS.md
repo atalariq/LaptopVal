@@ -44,7 +44,7 @@
 
 - [x] Design system integration (Wana tokens via Tailwind `@theme`, light/dark)
 - [x] E2E tests (Playwright) — public flows + admin auth (`bun run test:e2e`)
-- [ ] Resolve `state_referenced_locally` warnings in `LaptopForm`, `scoring`, `tier-list`
+- [x] Resolve `state_referenced_locally` warnings in `LaptopForm`, `scoring`, `tier-list`
 
 ## Future
 

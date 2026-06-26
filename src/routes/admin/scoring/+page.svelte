@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData, ActionData } from './$types';
   let { data, form }: { data: PageData; form: ActionData } = $props();
-  const c = data.config;
+  const c = $derived(data.config);
   const j = (v: unknown) => JSON.stringify(v, null, 2);
 </script>
 
