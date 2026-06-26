@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 import { verify as argon2Verify } from "argon2";
 import { db } from "./db";
 import { sessions, users } from "./db/schema";
@@ -24,9 +24,17 @@ export async function hashToken(token: string): Promise<string> {
   return toHex(new Uint8Array(digest));
 }
 
+/** Remove sessions past their expiry. Without this, sessions that are never
+ *  revisited (so validateSession never prunes them) accumulate indefinitely. */
+export async function deleteExpiredSessions(): Promise<void> {
+  await db.delete(sessions).where(lt(sessions.expiresAt, new Date()));
+}
+
 export async function createSession(
   userId: number,
 ): Promise<{ token: string; expiresAt: Date }> {
+  // Opportunistic cleanup; cheap and naturally rate-limited by login frequency.
+  await deleteExpiredSessions();
   const token = generateToken();
   const id = await hashToken(token);
   const expiresAt = new Date(Date.now() + SESSION_TTL_MS);

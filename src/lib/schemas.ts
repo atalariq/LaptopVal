@@ -112,6 +112,8 @@ export function parseWith<T>(
   if (r.success) return { ok: true, data: r.data };
   const errors: Record<string, string> = {};
   for (const issue of r.error.issues)
-    errors[String(issue.path[0] ?? "_")] = issue.message;
+    // Join the full path so nested fields (e.g. "price.bands.0.points") keep a
+    // distinct key instead of collapsing onto their top-level parent.
+    errors[issue.path.length ? issue.path.join(".") : "_"] = issue.message;
   return { ok: false, errors };
 }

@@ -4,8 +4,10 @@ import {
   brandSchema,
   useCaseSchema,
   laptopSchema,
+  scoringConfigSchema,
   parseWith,
 } from "./schemas";
+import { DEFAULT_SCORING_CONFIG } from "$lib/scoring";
 
 const valid = {
   cpuTier: 2,
@@ -119,5 +121,12 @@ describe("parseWith", () => {
     });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.errors.name).toBeTruthy();
+  });
+  it("keeps the full path for nested field errors", () => {
+    const bad = structuredClone(DEFAULT_SCORING_CONFIG);
+    bad.price.idrPerQualityPoint = -1; // must be positive
+    const r = parseWith(scoringConfigSchema, bad);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors["price.idrPerQualityPoint"]).toBeTruthy();
   });
 });
