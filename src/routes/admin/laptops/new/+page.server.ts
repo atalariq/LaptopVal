@@ -4,12 +4,16 @@ import {
   getBrands,
   getActiveScoringConfig,
   createLaptop,
+  getCpus,
+  getGpus,
 } from "$lib/server/queries";
 import { laptopSchema, parseWith } from "$lib/schemas";
 
 export const load: PageServerLoad = async () => ({
   brands: await getBrands(),
   config: await getActiveScoringConfig(),
+  cpus: await getCpus(),
+  gpus: await getGpus(),
 });
 
 export const actions: Actions = {

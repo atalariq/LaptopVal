@@ -5,6 +5,8 @@ import {
   getActiveScoringConfig,
   getLaptopById,
   updateLaptop,
+  getCpus,
+  getGpus,
 } from "$lib/server/queries";
 import { laptopSchema, parseWith } from "$lib/schemas";
 
@@ -18,6 +20,8 @@ export const load: PageServerLoad = async ({ params }) => {
     laptop,
     brands: await getBrands(),
     config: await getActiveScoringConfig(),
+    cpus: await getCpus(),
+    gpus: await getGpus(),
   };
 };
 
